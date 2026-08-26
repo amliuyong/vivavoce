@@ -56,7 +56,6 @@ if rg -n --hidden -S \
 fi
 
 if rg -n --hidden -S \
-  -e 'amliuyong' \
   -e 'cn_bj' \
   -e 'my_work_us' \
   -e 'viva\.aws\.' \

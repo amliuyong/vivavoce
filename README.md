@@ -1,138 +1,192 @@
-# VivaVoce
+<p align="center">
+  <img src="docs/assets/vivavoce-mark.svg" width="128" alt="VivaVoce project icon">
+</p>
 
-VivaVoce is a self-hosted real-time voice assessment platform. It combines a
-web client, a control-plane API, a real-time session service, GPU-based speech
-inference, configurable LLMs, and asynchronous evaluation.
+<h1 align="center">VivaVoce</h1>
 
-The core model is intentionally general:
+<p align="center">
+  <strong>Open-source, self-hosted infrastructure for real-time, voice-first assessments.</strong>
+</p>
 
-- an **Agent** defines persona, instructions, scoring rubric, and voice settings;
-- a **Question Bank** defines reusable questions and reference material;
-- a **Session** freezes those inputs for one real-time conversation;
-- an **Evaluator** produces a structured result after the session.
+<p align="center">
+  Define an agent, attach a question bank, run a natural spoken session, and produce a structured result.
+</p>
 
-![VivaVoce architecture](docs/architecture-overview.svg)
+<p align="center">
+  <a href="https://github.com/amliuyong/vivavoce/actions/workflows/ci.yml"><img src="https://github.com/amliuyong/vivavoce/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-0b7285.svg" alt="Apache-2.0 license"></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-0f172a.svg" alt="Security policy"></a>
+</p>
 
-## Repository layout
+VivaVoce combines a browser client, an authenticated control plane, a
+low-latency real-time service, private GPU speech inference, configurable LLM
+access, and asynchronous evaluation in one deployable system.
 
-| Path | Responsibility |
+The domain model is deliberately general. Interviews, examinations, training,
+coaching, and simulations are expressed through configuration and policy
+rather than separate application forks.
+
+> **Project status:** the default branch is the active development line.
+> Interfaces may evolve before the first stable, versioned release.
+
+## Why VivaVoce
+
+- **Voice-native interaction** — streaming ASR and TTS, turn-taking,
+  interruption handling, and playback settlement are first-class concerns.
+- **Reusable assessment model** — Agents, Question Banks, Sessions, and Results
+  remain independent of a single assessment use case.
+- **Self-hosted trust boundaries** — public, control-plane, real-time, GPU, and
+  event-processing responsibilities are separated.
+- **Provider flexibility** — model and speech providers are selected through
+  deployment configuration instead of browser-shipped credentials.
+- **Portable configuration** — account IDs, domains, resource IDs, active image
+  tags, and secrets stay outside the source tree.
+- **Public-release guardrails** — CI runs the complete test suite plus repository
+  and Git-history secret scans.
+
+## Core model
+
+| Concept | Responsibility |
 |---|---|
-| `backend/` | FastAPI control plane, authentication, sessions, results, and integrations |
-| `bridge/` | Real-time WebSocket session orchestration and LLM/TTS/ASR coordination |
-| `frontend/` | Next.js web client |
-| `gpu/` | Streaming ASR/TTS service and vendored speech components |
-| `infrastructure/` | AWS CDK application |
-| `contracts/` | Public protocol schemas |
-| `examples/` | Client integration examples |
-| `docs/` | Architecture, deployment, integration, and protocol documentation |
-| `scripts/` | Local setup, test, image-build, and deployment tools |
+| **Agent** | Persona, instructions, scoring rubric, and voice behavior |
+| **Question Bank** | Reusable questions and reference material |
+| **Session** | An immutable snapshot of the inputs used for one conversation |
+| **Result** | Structured asynchronous evaluation of the completed session |
+
+## Architecture
+
+![VivaVoce architecture overview](docs/architecture-overview.svg)
+
+An authorized client creates a Session through the control plane and receives
+a short-lived join credential. The real-time service then coordinates audio,
+speech inference, LLM output, synthesized playback, and interruption state.
+Terminal events are persisted and evaluated asynchronously.
+
+The browser never receives long-lived machine credentials, and the GPU speech
+service is not internet-facing. See the [architecture guide](docs/HLD.md) for
+component ownership, data flow, persistence, and trust boundaries.
 
 ## Quick start
 
-Requirements:
+### Prerequisites
+
+For local development:
 
 - Python 3.12+
 - Node.js 20.19+, 22.13+, or 24+
 - npm
-- Docker for container builds
-- AWS CLI and an authenticated AWS profile for deployment
 
-Create local configuration:
+AWS CLI, an authenticated AWS profile, Docker, a Route 53 domain, and GPU quota
+are additionally required for an AWS deployment.
+
+### Install and test
 
 ```bash
+git clone https://github.com/amliuyong/vivavoce.git
+cd vivavoce
+
 cp .env.example .env
 cp .env.region.example .env.region
 chmod 600 .env .env.region
-```
 
-Do not place AWS access keys in these files. Use AWS IAM Identity Center, an
-assumed role, or a named AWS CLI profile.
-
-Check the workstation and configuration without printing values:
-
-```bash
 ./scripts/viva doctor
-./scripts/viva env
-```
-
-Install locked dependencies and run tests:
-
-```bash
 ./scripts/viva bootstrap
 ./scripts/viva test
 ```
 
-Synthesize the CDK application without deploying:
+`doctor` verifies the local toolchain, file permissions, and ignored
+configuration without printing configuration values.
+
+### Synthesize or deploy
+
+Populate the two local environment files, review the
+[deployment guide](docs/DEPLOYMENT.md), and synthesize the AWS CDK application:
 
 ```bash
 ./scripts/viva synth
 ```
 
-See [Deployment](docs/DEPLOYMENT.md) before running:
+When the synthesized changes and active AWS identity are correct:
 
 ```bash
 ./scripts/viva deploy
 ```
 
-## Local configuration
+Do not put AWS access keys in either environment file. Prefer IAM Identity
+Center, an assumed role, or a named AWS CLI profile.
+
+## Configuration and secrets
 
 Only the templates are tracked:
 
-- `.env` contains common settings and optional provider credentials.
-- `.env.region` contains AWS account, region, domain, identity-provider, and
-  GPU settings.
-- `.env.example` and `.env.region.example` contain placeholders only.
+| Local file | Purpose | Git status |
+|---|---|---|
+| `.env` | Common settings and optional provider credentials | Ignored; mode `600` required |
+| `.env.region` | AWS account, region, domain, identity, and GPU settings | Ignored; mode `600` required |
+| `.env.example` | Safe common configuration template | Tracked |
+| `.env.region.example` | Safe regional configuration template | Tracked |
 
-The loader rejects a real environment file that is readable by group or other
-users. Deployment scripts map the public `VIVA_*` names to legacy runtime names
-at the script boundary; application runtime names can therefore evolve
-separately from the public installation contract.
+Never commit credentials, presigned URLs, deployment identifiers, recordings,
+transcripts, model weights, generated reports, or live test evidence.
+Reference-voice files are local deployment assets under
+`gpu/gpu_service/assets/voices/` and are ignored by Git.
 
-Never commit:
+## Repository map
 
-- `.env` or `.env.region`;
-- presigned model URLs;
-- access tokens, API keys, passwords, certificates, or private keys;
-- account IDs, hosted-zone IDs, user-pool IDs, client IDs, or production
-  endpoints copied from a live environment;
-- generated reports, recordings, transcripts, model weights, or test evidence.
+| Path | Responsibility |
+|---|---|
+| `backend/` | FastAPI control plane, authorization, Sessions, Results, and integrations |
+| `bridge/` | Real-time WebSocket orchestration, LLM coordination, and audio state |
+| `frontend/` | Next.js browser client |
+| `gpu/` | Private streaming ASR/TTS service and vendored speech components |
+| `infrastructure/` | AWS CDK application and event handlers |
+| `contracts/` | Public protocol schemas |
+| `examples/` | Client integration examples |
+| `uat/` | User-acceptance and governed-path tests |
+| `docs/` | Architecture, deployment, integration, and protocol documentation |
+| `scripts/` | Local setup, testing, image-build, scanning, and deployment tools |
 
-Reference-voice audio and its matching transcripts are local deployment
-assets. Put only files that you are authorized to use under
-`gpu/gpu_service/assets/voices/`; that directory is ignored except for its
-README.
+## Documentation
 
-## Architecture
+| Guide | Start here when you want to... |
+|---|---|
+| [Product vision](docs/VISION.md) | Understand the product boundaries and design principles |
+| [Architecture](docs/HLD.md) | Review components, ownership, data flow, and trust boundaries |
+| [Requirements](docs/REQUIREMENTS.md) | Inspect functional and operational requirements |
+| [Deployment](docs/DEPLOYMENT.md) | Prepare configuration and deploy to AWS |
+| [Integration](docs/INTEGRATION.md) | Build a trusted client or server integration |
+| [Real-time protocol](docs/REALTIME-WS-PROTOCOL.md) | Implement the WebSocket audio and signaling contract |
+| [Public release checklist](docs/PUBLIC_RELEASE_CHECKLIST.md) | Audit a fork or release before publishing it |
 
-The public entry point serves the web application and authenticated APIs. The
-control plane creates a session and passes a frozen session context to the
-real-time service. The real-time service streams audio to the private GPU
-speech service, sends text to the configured LLM, and returns synthesized
-audio to the client. Session events are persisted for asynchronous evaluation.
+The generated [OpenAPI document](backend/openapi.json) is the authoritative
+REST contract.
 
-Further reading:
+## Contributing
 
-- [Product vision](docs/VISION.md)
-- [Architecture](docs/HLD.md)
-- [Requirements](docs/REQUIREMENTS.md)
-- [Deployment](docs/DEPLOYMENT.md)
-- [Integration](docs/INTEGRATION.md)
-- [Real-time WebSocket protocol](docs/REALTIME-WS-PROTOCOL.md)
-- [Public release checklist](docs/PUBLIC_RELEASE_CHECKLIST.md)
+Contributions are welcome. Create a focused branch, keep deployment-specific
+information out of commits and pull requests, and run:
 
-## Security
+```bash
+./scripts/public-scan.sh
+./scripts/viva test
+```
 
-Treat all browser-visible identifiers as public, but do not unnecessarily
-publish identifiers for a particular deployment. Secrets belong in a managed
-secret store and must not be logged or returned by administrative APIs.
+`main` is protected: changes are merged through pull requests after the
+required public scan and test checks pass. Read
+[CONTRIBUTING.md](CONTRIBUTING.md) before submitting a change.
 
-Before making a fork or release public, complete the
-[public release checklist](docs/PUBLIC_RELEASE_CHECKLIST.md). In particular,
-review third-party licenses, generated artifacts, environment identifiers, and
-the complete Git object database.
+## Security and responsible use
+
+Do not open a public issue containing exploit details, credentials, personal
+data, recordings, transcripts, or deployment identifiers. Follow the private
+reporting process in [SECURITY.md](SECURITY.md).
+
+Before production use, define consent, retention, deletion, access-control,
+model-license, and human-review policies appropriate for the assessment
+context and jurisdiction.
 
 ## License
 
-See [LICENSE](LICENSE) and [NOTICE](NOTICE). Confirm that you have the right to
-license the project and that all bundled third-party material is authorized for
-public distribution before the first public push.
+VivaVoce is licensed under the [Apache License 2.0](LICENSE). Bundled and
+runtime third-party components remain subject to their own terms; see
+[NOTICE](NOTICE).
