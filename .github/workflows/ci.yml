@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: "3.12"
+      - name: Scan public tree
+        run: ./scripts/public-scan.sh
+      - name: Install pinned secret scanners
+        shell: bash
+        run: |
+          set -euo pipefail
+          scanner_dir="$(mktemp -d)"
+
+          curl --fail --location --retry 3 \
+            --output "$scanner_dir/gitleaks.tar.gz" \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          printf '%s  %s\n' \
+            '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' \
+            "$scanner_dir/gitleaks.tar.gz" | sha256sum --check -
+          tar -C "$scanner_dir" -xzf "$scanner_dir/gitleaks.tar.gz" gitleaks
+
+          curl --fail --location --retry 3 \
+            --output "$scanner_dir/trufflehog.tar.gz" \
+            https://github.com/trufflesecurity/trufflehog/releases/download/v3.97.1/trufflehog_3.97.1_linux_amd64.tar.gz
+          printf '%s  %s\n' \
+            'f863ea3a8d786f7d097870496c977944cce7372a2fe1e56707d965016e543ece' \
+            "$scanner_dir/trufflehog.tar.gz" | sha256sum --check -
+          tar -C "$scanner_dir" -xzf "$scanner_dir/trufflehog.tar.gz" trufflehog
+
+          printf '%s\n' "$scanner_dir" >> "$GITHUB_PATH"
+      - name: Scan candidate files with Gitleaks and TruffleHog
+        run: ./scripts/scan-secrets.sh --history
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            backend/pyproject.toml
+            gpu/pyproject.toml
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: "22.13.1"
+          cache: npm
+          cache-dependency-path: |
+            bridge/package-lock.json
+            frontend/package-lock.json
+            infrastructure/package-lock.json
+            examples/openai-realtime-sdk/package-lock.json
+      - name: Run tests
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: ./scripts/viva test

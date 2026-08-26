@@ -1,0 +1,17 @@
+# Session 调度器 —— container Lambda(复用 backend app/ 源码,单一事实源,不与 API 状态机漂移)。
+# 用 AWS Lambda Python 基础镜像(自带 runtime interface client);handler = app.scheduler.on_schedule。
+# 目标架构由 CDK DockerImageFunction 的 platform 控制(对齐 ARM64)。
+FROM public.ecr.aws/lambda/python:3.13
+ARG PIP_INDEX_URL
+
+# 依赖:与 API 同一组(boto3 等)。Lambda 基础镜像已含 boto3,但显式装以锁版本一致。
+# PIP_INDEX_URL(区域构建加速,默认空=官方源):中国区构建机传清华源。
+COPY requirements.txt ${LAMBDA_TASK_ROOT}/
+RUN pip install --no-cache-dir ${PIP_INDEX_URL:+--index-url "$PIP_INDEX_URL"} \
+    ${PIP_INDEX_URL:+--trusted-host $(echo "$PIP_INDEX_URL" | sed -E 's#https?://([^/]+).*#\1#')} \
+    -r ${LAMBDA_TASK_ROOT}/requirements.txt
+
+COPY app ${LAMBDA_TASK_ROOT}/app
+
+# EventBridge 定时触发入口
+CMD ["app.scheduler.on_schedule"]

@@ -1,0 +1,3 @@
+# This test deliberately contains invalid credential-shaped strings to verify
+# API redaction. Gitleaks and scripts/public-scan.sh still scan this file.
+backend/tests/test_system_settings_e2e\.py$

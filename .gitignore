@@ -1,0 +1,85 @@
+# ── Local-only files ──
+_my/
+my_*.sh
+
+# ── Local environment and credentials (never commit) ──
+.env
+.env.*
+!.env.example
+!.env.region.example
+*.pem
+*.key
+*.p12
+*.pfx
+.jumpbox-keys/
+secrets.*
+
+# ── Node / TypeScript ──
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── CDK ──
+cdk.out/
+.cdk.staging/
+cdk.context.json
+
+# Generated TypeScript output; keep checked-in JavaScript configuration files.
+*.d.ts
+infrastructure/**/*.js
+!infrastructure/jest.config.js
+!**/*.config.js
+
+# ── Frontend ──
+.next/
+out/
+.vercel/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ── Tests, reports, and runtime output ──
+coverage/
+.coverage
+htmlcov/
+report/
+reports/
+test-results/
+playwright-report/
+*.log
+
+# ── OS / editor ──
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# GPU model weights are downloaded during the build and must not enter Git.
+gpu/_models/
+gpu/aim_gpu.egg-info/
+gpu/gpu_service/assets/voices/*
+!gpu/gpu_service/assets/voices/README.md
+*.jpg
+
+# Generated or recorded audio is local test/deployment data.
+backend/tests/fixtures/*.pcm
+backend/tests/fixtures/*.wav
+
+# Generated analysis output.
+graphify-out/
+
+# Local agent metadata and worktrees.
+.claude/

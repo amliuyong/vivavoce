@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1800" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">VivaVoce architecture overview</title>
+  <desc id="desc">
+    VivaVoce deployment architecture showing thin clients, the public ALB entry, control plane,
+    realtime session plane, private GPU speech inference, external Bedrock LLM, and the data and event plane.
+    The same topology is deployed in AWS Global and AWS China partitions.
+  </desc>
+
+  <defs>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 9 5 L 0 10 z" fill="#566574"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 9 5 L 0 10 z" fill="#1769aa"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 9 5 L 0 10 z" fill="#aa6b12"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 9 5 L 0 10 z" fill="#2d8057"/>
+    </marker>
+    <style>
+      text {
+        font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        letter-spacing: 0;
+      }
+      .page-title { fill: #17212b; font-size: 30px; font-weight: 750; }
+      .page-subtitle { fill: #64717d; font-size: 14px; }
+      .boundary-title { fill: #26323d; font-size: 15px; font-weight: 700; }
+      .boundary-note { fill: #697681; font-size: 12px; }
+      .card-title { fill: #17212b; font-size: 17px; font-weight: 750; }
+      .card-subtitle { fill: #46535f; font-size: 12.5px; font-weight: 650; }
+      .card-text { fill: #52606c; font-size: 12px; }
+      .small { fill: #687581; font-size: 11px; }
+      .mono { fill: #3f4c58; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 10.5px; }
+      .tag { fill: #ffffff; font-size: 11px; font-weight: 750; }
+      .route { fill: #34414d; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 10.5px; }
+      .flow-label { fill: #43515d; font-size: 10.5px; font-weight: 650; }
+      .live-label { fill: #1769aa; font-size: 10.5px; font-weight: 700; }
+      .external-label { fill: #9b5f0c; font-size: 10.5px; font-weight: 700; }
+      .footer-title { fill: #aeb9c4; font-size: 11px; font-weight: 700; }
+      .footer-text { fill: #ffffff; font-size: 11.5px; }
+      .control-flow { fill: none; stroke: #566574; stroke-width: 1.8; marker-end: url(#arrow-gray); vector-effect: non-scaling-stroke; }
+      .live-flow { fill: none; stroke: #1769aa; stroke-width: 4; marker-end: url(#arrow-blue); vector-effect: non-scaling-stroke; }
+      .live-flow-bi { fill: none; stroke: #1769aa; stroke-width: 4; marker-start: url(#arrow-blue); marker-end: url(#arrow-blue); vector-effect: non-scaling-stroke; }
+      .external-flow { fill: none; stroke: #aa6b12; stroke-width: 3.2; marker-end: url(#arrow-amber); vector-effect: non-scaling-stroke; }
+      .event-flow { fill: none; stroke: #2d8057; stroke-width: 1.8; stroke-dasharray: 6 5; marker-end: url(#arrow-green); vector-effect: non-scaling-stroke; }
+      .optional-flow { fill: none; stroke: #aa6b12; stroke-width: 1.8; stroke-dasharray: 6 5; marker-end: url(#arrow-amber); vector-effect: non-scaling-stroke; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f4f7f9"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1600" height="96" fill="#ffffff"/>
+  <rect x="0" y="95" width="1600" height="1" fill="#d8e0e6"/>
+  <text class="page-title" x="46" y="43">VivaVoce 架构一览</text>
+  <text class="page-subtitle" x="46" y="70">薄客户端 · 厚服务端 · 三段式实时语音 · 双分区同构部署</text>
+
+  <rect x="1190" y="27" width="92" height="34" rx="8" fill="#e7f2f8" stroke="#7aaaca"/>
+  <text x="1236" y="49" text-anchor="middle" fill="#1769aa" font-size="12" font-weight="750">AWS Global</text>
+  <rect x="1294" y="27" width="92" height="34" rx="8" fill="#fff3df" stroke="#d8a44a"/>
+  <text x="1340" y="49" text-anchor="middle" fill="#8f5a0d" font-size="12" font-weight="750">AWS China</text>
+  <rect x="1398" y="27" width="156" height="34" rx="8" fill="#17212b"/>
+  <text x="1476" y="49" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="750">ONE CODEBASE</text>
+
+  <!-- Left: clients and identity -->
+  <rect x="34" y="122" width="264" height="646" rx="8" fill="#ffffff" stroke="#d2dbe2"/>
+  <text class="boundary-title" x="54" y="151">客户端与身份</text>
+  <text class="boundary-note" x="54" y="172">公网 / 外置身份域</text>
+
+  <g>
+    <rect x="54" y="196" width="224" height="178" rx="8" fill="#f7fafc" stroke="#aebbc5"/>
+    <rect x="54" y="196" width="224" height="6" rx="3" fill="#1769aa"/>
+    <rect x="72" y="220" width="44" height="44" rx="8" fill="#1769aa"/>
+    <text x="94" y="247" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="750">UI</text>
+    <text class="card-title" x="130" y="238">三端客户端</text>
+    <text class="card-subtitle" x="130" y="258">Web 现行 · 原生端后续</text>
+    <text class="card-text" x="72" y="292">音频采集 / 播放 · 信令 · UI</text>
+    <text class="card-text" x="72" y="315">本地打断检测 · 播放 worklet</text>
+    <rect x="72" y="333" width="188" height="25" rx="6" fill="#e7f2f8"/>
+    <text class="mono" x="166" y="350" text-anchor="middle">WSS + PCM → WebRTC</text>
+  </g>
+
+  <g>
+    <rect x="54" y="400" width="224" height="105" rx="8" fill="#f7fafc" stroke="#aebbc5"/>
+    <rect x="72" y="420" width="44" height="44" rx="8" fill="#566574"/>
+    <text x="94" y="447" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">EXT</text>
+    <text class="card-title" x="130" y="438">外部系统</text>
+    <text class="card-subtitle" x="130" y="458">Integration API / MCP</text>
+    <text class="card-text" x="72" y="487">API Key · 委托 token · Webhook</text>
+  </g>
+
+  <g>
+    <rect x="54" y="532" width="224" height="188" rx="8" fill="#f6faf7" stroke="#8bb59d"/>
+    <rect x="54" y="532" width="224" height="6" rx="3" fill="#2d8057"/>
+    <rect x="72" y="557" width="44" height="44" rx="8" fill="#2d8057"/>
+    <text x="94" y="584" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">ID</text>
+    <text class="card-title" x="130" y="575">外置 OIDC</text>
+    <text class="card-subtitle" x="130" y="595">Cognito today</text>
+    <text class="card-text" x="72" y="628">JWT / JWKS 本地验签</text>
+    <text class="card-text" x="72" y="650">Global 本区 · 中国区复用美东</text>
+    <text class="card-text" x="72" y="672">目标：Authorization Code + PKCE</text>
+    <rect x="72" y="688" width="188" height="19" rx="6" fill="#dfefe5"/>
+    <text x="166" y="702" text-anchor="middle" fill="#2d6f4e" font-size="10.5" font-weight="700">登录跨境，热路径区内验签</text>
+  </g>
+
+  <!-- Center: AWS region / VPC -->
+  <rect x="326" y="122" width="914" height="646" rx="8" fill="#ffffff" stroke="#9eabb6" stroke-width="1.5"/>
+  <rect x="326" y="122" width="914" height="43" rx="8" fill="#edf1f4"/>
+  <text class="boundary-title" x="348" y="149">AWS 部署 Region / VPC</text>
+  <text class="boundary-note" x="540" y="149">同一 CDK Stack 运行于 aws 与 aws-cn；除 LLM 调用外，数据留在本区</text>
+
+  <!-- Public entry -->
+  <g>
+    <rect x="372" y="190" width="822" height="104" rx="8" fill="#f7fafc" stroke="#738391"/>
+    <rect x="372" y="190" width="822" height="7" rx="3" fill="#17212b"/>
+    <rect x="392" y="214" width="48" height="48" rx="8" fill="#17212b"/>
+    <text x="416" y="243" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">443</text>
+    <text class="card-title" x="458" y="228">唯一公网入口</text>
+    <text class="card-subtitle" x="458" y="249">Public ALB · HTTPS/WSS · ACM · REGIONAL WAF</text>
+    <text class="card-text" x="458" y="271">无 CloudFront；静态前端由 backend 容器托管</text>
+
+    <rect x="840" y="214" width="142" height="28" rx="6" fill="#e9eef2"/>
+    <text class="route" x="911" y="232" text-anchor="middle">/  ·  /api/*</text>
+    <rect x="994" y="214" width="180" height="28" rx="6" fill="#e7f2f8"/>
+    <text class="route" x="1084" y="232" text-anchor="middle">/rt/ws · /v1/realtime</text>
+    <text class="small" x="840" y="267">控制面目标</text>
+    <text class="small" x="994" y="267">实时会话目标</text>
+  </g>
+
+  <!-- Plane tags -->
+  <rect x="372" y="324" width="78" height="25" rx="7" fill="#0b7f86"/>
+  <text class="tag" x="411" y="341" text-anchor="middle">控制面</text>
+  <rect x="666" y="324" width="78" height="25" rx="7" fill="#1769aa"/>
+  <text class="tag" x="705" y="341" text-anchor="middle">实时面</text>
+  <rect x="960" y="324" width="78" height="25" rx="7" fill="#aa6b12"/>
+  <text class="tag" x="999" y="341" text-anchor="middle">语音推理</text>
+
+  <!-- Compute row -->
+  <g>
+    <rect x="372" y="360" width="252" height="190" rx="8" fill="#f2faf9" stroke="#67aeb1"/>
+    <rect x="372" y="360" width="252" height="7" rx="3" fill="#0b7f86"/>
+    <rect x="392" y="384" width="46" height="46" rx="8" fill="#0b7f86"/>
+    <text x="415" y="412" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">API</text>
+    <text class="card-title" x="454" y="400">控制面 API</text>
+    <text class="card-subtitle" x="454" y="420">FastAPI · Fargate · stateless</text>
+    <text class="card-text" x="392" y="452">Agent / QuestionBank / Session CRUD</text>
+    <text class="card-text" x="392" y="475">题目固化 · 鉴权 · 容量准入</text>
+    <text class="card-text" x="392" y="498">系统配置 · 集成 API · MCP</text>
+    <rect x="392" y="516" width="212" height="22" rx="6" fill="#dcefee"/>
+    <text class="mono" x="498" y="531" text-anchor="middle">backend/ · :8000</text>
+  </g>
+
+  <g>
+    <rect x="666" y="360" width="252" height="190" rx="8" fill="#f2f7fc" stroke="#6f9fc7"/>
+    <rect x="666" y="360" width="252" height="7" rx="3" fill="#1769aa"/>
+    <rect x="686" y="384" width="46" height="46" rx="8" fill="#1769aa"/>
+    <text x="709" y="412" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">RT</text>
+    <text class="card-title" x="748" y="400">实时会话服务</text>
+    <text class="card-subtitle" x="748" y="420">Node / TypeScript · Fargate</text>
+    <text class="card-text" x="686" y="452">端点检测 · DTD / barge-in</text>
+    <text class="card-text" x="686" y="475">turn-taking · 题目推进 · 收尾</text>
+    <text class="card-text" x="686" y="498">录音 · 转写 · per-turn metrics</text>
+    <rect x="686" y="516" width="212" height="22" rx="6" fill="#e0edf7"/>
+    <text class="mono" x="792" y="531" text-anchor="middle">bridge/ · :3001</text>
+  </g>
+
+  <g>
+    <rect x="960" y="360" width="234" height="190" rx="8" fill="#fff9ef" stroke="#d0a35b"/>
+    <rect x="960" y="360" width="234" height="7" rx="3" fill="#aa6b12"/>
+    <rect x="980" y="384" width="46" height="46" rx="8" fill="#aa6b12"/>
+    <text x="1003" y="412" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="750">GPU</text>
+    <text class="card-title" x="1042" y="400">ASR + TTS</text>
+    <text class="card-subtitle" x="1042" y="420">ECS on private GPU EC2</text>
+    <text class="card-text" x="980" y="452">FunASR streaming ASR</text>
+    <text class="card-text" x="980" y="475">OmniVoice voice-clone TTS</text>
+    <text class="card-text" x="980" y="498">liveness / readiness · capacity</text>
+    <rect x="980" y="516" width="194" height="22" rx="6" fill="#f5e6c7"/>
+    <text class="mono" x="1077" y="531" text-anchor="middle">gpu/ · private WS</text>
+  </g>
+
+  <!-- Data and event row -->
+  <rect x="372" y="584" width="822" height="156" rx="8" fill="#f7faf8" stroke="#91b19d"/>
+  <rect x="390" y="570" width="112" height="25" rx="7" fill="#2d8057"/>
+  <text class="tag" x="446" y="587" text-anchor="middle">数据 / 事件面</text>
+
+  <g>
+    <rect x="392" y="614" width="186" height="102" rx="8" fill="#ffffff" stroke="#9eb5a7"/>
+    <rect x="408" y="630" width="38" height="38" rx="8" fill="#2d8057"/>
+    <text x="427" y="654" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="750">DB</text>
+    <text class="card-title" x="460" y="644">DynamoDB</text>
+    <text class="card-text" x="408" y="677">会话 · 转写 · 指标 · 结果</text>
+    <text class="small" x="408" y="698">Streams 驱动评估</text>
+  </g>
+  <g>
+    <rect x="594" y="614" width="166" height="102" rx="8" fill="#ffffff" stroke="#9eb5a7"/>
+    <rect x="610" y="630" width="38" height="38" rx="8" fill="#2d8057"/>
+    <text x="629" y="654" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="750">S3</text>
+    <text class="card-title" x="662" y="644">S3 + KMS</text>
+    <text class="card-text" x="610" y="677">双声道录音</text>
+    <text class="small" x="610" y="698">本区加密存储</text>
+  </g>
+  <g>
+    <rect x="776" y="614" width="186" height="102" rx="8" fill="#ffffff" stroke="#9eb5a7"/>
+    <rect x="792" y="630" width="38" height="38" rx="8" fill="#2d8057"/>
+    <text x="811" y="654" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="750">λ</text>
+    <text class="card-title" x="844" y="644">Evaluator</text>
+    <text class="card-text" x="792" y="677">completed → rubric 评分</text>
+    <text class="small" x="792" y="698">异步写 Results</text>
+  </g>
+  <g>
+    <rect x="978" y="614" width="196" height="102" rx="8" fill="#ffffff" stroke="#9eb5a7"/>
+    <rect x="994" y="630" width="38" height="38" rx="8" fill="#2d8057"/>
+    <text x="1013" y="654" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="750">OPS</text>
+    <text class="card-title" x="1046" y="644">调度与可观测</text>
+    <text class="card-text" x="994" y="677">EventBridge Scheduler</text>
+    <text class="small" x="994" y="698">CloudWatch metrics / alarms</text>
+  </g>
+
+  <!-- Right: external inference services -->
+  <rect x="1268" y="122" width="298" height="646" rx="8" fill="#ffffff" stroke="#d2dbe2"/>
+  <text class="boundary-title" x="1288" y="151">托管推理服务</text>
+  <text class="boundary-note" x="1288" y="172">VPC 外部 · HTTPS</text>
+
+  <g>
+    <rect x="1288" y="214" width="258" height="224" rx="8" fill="#fff9ef" stroke="#d0a35b"/>
+    <rect x="1288" y="214" width="258" height="7" rx="3" fill="#aa6b12"/>
+    <rect x="1308" y="240" width="46" height="46" rx="8" fill="#aa6b12"/>
+    <text x="1331" y="268" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="750">LLM</text>
+    <text class="card-title" x="1370" y="256">Amazon Bedrock</text>
+    <text class="card-subtitle" x="1370" y="276">流式 LLM 推理</text>
+    <text class="card-text" x="1308" y="312">mantle Bearer / OpenAI-compatible</text>
+    <text class="card-text" x="1308" y="335">默认中国模型：GLM / MiniMax</text>
+    <text class="card-text" x="1308" y="358">Global：Bearer，IAM 可选回退</text>
+    <text class="card-text" x="1308" y="381">aws-cn：跨境调用配置 Region</text>
+    <rect x="1308" y="398" width="218" height="24" rx="6" fill="#f5e6c7"/>
+    <text x="1417" y="414" text-anchor="middle" fill="#87540d" font-size="10.5" font-weight="700">LLM 不运行在自建 GPU 上</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="478" width="258" height="114" rx="8" fill="#fffaf2" stroke="#d7b77d"/>
+    <rect x="1308" y="498" width="46" height="46" rx="8" fill="#c0862f"/>
+    <text x="1331" y="526" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="750">TTS</text>
+    <text class="card-title" x="1370" y="514">MiniMax TTS</text>
+    <text class="card-subtitle" x="1370" y="535">可选云 provider</text>
+    <text class="card-text" x="1308" y="568">句边界失败回退 OmniVoice</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="628" width="258" height="102" rx="8" fill="#fff5f2" stroke="#d8998e"/>
+    <text x="1308" y="654" fill="#a54335" font-size="12.5" font-weight="750">中国区数据边界</text>
+    <text class="card-text" x="1308" y="679">仅 LLM 请求跨境；录音、转写、</text>
+    <text class="card-text" x="1308" y="700">会话状态与评分结果保留在本区。</text>
+    <text class="small" x="1308" y="718">上线前需完成 PIPL 合规评估</text>
+  </g>
+
+  <!-- Primary and control flows -->
+  <path class="live-flow" d="M 278 248 H 372"/>
+  <text class="live-label" x="325" y="235" text-anchor="middle">HTTPS / WSS</text>
+
+  <path class="control-flow" d="M 278 448 H 312 V 274 H 372"/>
+  <text class="flow-label" x="304" y="430" text-anchor="middle">API / MCP</text>
+
+  <path class="control-flow" d="M 548 294 V 360"/>
+  <text class="flow-label" x="474" y="332">static / REST</text>
+
+  <path class="live-flow" d="M 834 294 V 360"/>
+  <text class="live-label" x="850" y="332">realtime media</text>
+
+  <path class="control-flow" d="M 624 425 H 666"/>
+  <text class="flow-label" x="645" y="410" text-anchor="middle">信令</text>
+  <text class="small" x="645" y="443" text-anchor="middle">服务发现</text>
+
+  <path class="live-flow-bi" d="M 918 425 H 960"/>
+  <text class="live-label" x="939" y="405" text-anchor="middle">WS</text>
+  <text class="small" x="939" y="448" text-anchor="middle">PCM</text>
+
+  <path class="external-flow" d="M 918 392 H 940 V 310 H 1248 V 322 H 1288"/>
+  <text class="external-label" x="1094" y="300" text-anchor="middle">LLM token stream</text>
+
+  <path class="optional-flow" d="M 1194 480 H 1248 V 535 H 1288"/>
+  <text class="external-label" x="1238" y="469" text-anchor="end">可选 TTS</text>
+
+  <!-- Data and event flows -->
+  <path class="event-flow" d="M 498 550 V 614"/>
+  <path class="event-flow" d="M 740 550 V 576 H 530 V 614"/>
+  <path class="event-flow" d="M 792 550 V 590 H 677 V 614"/>
+  <text class="small" x="706" y="578">recording</text>
+
+  <path class="event-flow" d="M 578 665 H 584 V 730 H 768 V 665 H 776"/>
+  <text class="small" x="676" y="724" text-anchor="middle">DDB Streams</text>
+
+  <path class="event-flow" d="M 870 550 V 572 H 1076 V 614"/>
+  <text class="small" x="988" y="566" text-anchor="middle">turn metrics / alarms</text>
+
+  <!-- Footer / legend -->
+  <rect x="0" y="798" width="1600" height="102" fill="#17212b"/>
+  <g transform="translate(46 0)">
+    <text class="footer-title" x="0" y="828">链路图例</text>
+    <line x1="0" y1="852" x2="66" y2="852" stroke="#4ea0d2" stroke-width="4"/>
+    <text class="footer-text" x="78" y="856">实时媒体 / 流式推理</text>
+    <line x1="230" y1="852" x2="296" y2="852" stroke="#aeb9c4" stroke-width="2"/>
+    <text class="footer-text" x="308" y="856">控制 / API</text>
+    <line x1="414" y1="852" x2="480" y2="852" stroke="#69b489" stroke-width="2" stroke-dasharray="6 5"/>
+    <text class="footer-text" x="492" y="856">异步事件 / 存储</text>
+  </g>
+  <line x1="720" y1="820" x2="720" y2="878" stroke="#3d4a56"/>
+  <g transform="translate(752 0)">
+    <text class="footer-title" x="0" y="828">安全边界</text>
+    <text class="footer-text" x="0" y="856">唯一公网入口：ALB 443</text>
+    <text class="footer-text" x="230" y="856">GPU：私网、无 DDB / Bedrock 权限</text>
+  </g>
+  <line x1="1224" y1="820" x2="1224" y2="878" stroke="#3d4a56"/>
+  <g transform="translate(1256 0)">
+    <text class="footer-title" x="0" y="828">明确不包含</text>
+    <text class="footer-text" x="0" y="856">No PSTN · No FreeSWITCH · No CloudFront</text>
+  </g>
+</svg>

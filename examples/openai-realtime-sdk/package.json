@@ -1,0 +1,14 @@
+{
+  "name": "vivavoce-openai-realtime-sdk-example",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "node": "node node.mjs",
+    "browser": "node browser-server.mjs",
+    "check": "node --check shared.mjs && node --check node.mjs && node --check browser-server.mjs && node --check public/app.js && node --check public/mic-worklet.js"
+  },
+  "dependencies": {
+    "@openai/agents-realtime": "0.14.2"
+  }
+}

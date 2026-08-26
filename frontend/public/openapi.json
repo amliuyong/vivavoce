@@ -1,0 +1,6038 @@
+{
+  "components": {
+    "schemas": {
+      "AgentIn": {
+        "description": "Agent(design contract,取代 003 的 Profile 角色):人设 + rubric + engine + 出题策略 + self_bookable。\n\n**不再内嵌 questions** —— 题目外置到 QuestionBank,Agent 经 question_strategy 决定怎么出题。\nrubric 归 Agent(评分是 Agent 的职责定义)。default_question_bank_id 供 staff 自助预约用\n(staff 不选题库,用 Agent 预设;admin/HR 发起可覆盖)。",
+        "properties": {
+          "avatar_style": {
+            "anyOf": [
+              {
+                "enum": [
+                  "minimal",
+                  "round",
+                  "tech",
+                  "waveform"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Style"
+          },
+          "default_question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Question Bank Id"
+          },
+          "engine": {
+            "$ref": "#/components/schemas/EngineParams"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "question_strategy": {
+            "default": "sequential",
+            "enum": [
+              "sequential",
+              "random_n",
+              "easy_to_hard",
+              "random_n_easy_to_hard"
+            ],
+            "title": "Question Strategy",
+            "type": "string"
+          },
+          "rubric": {
+            "$ref": "#/components/schemas/Rubric"
+          },
+          "self_bookable": {
+            "default": false,
+            "title": "Self Bookable",
+            "type": "boolean"
+          },
+          "show_subtitles": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Show Subtitles"
+          },
+          "speaker_lock": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speaker Lock"
+          },
+          "strategy_n": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy N"
+          },
+          "system_prompt": {
+            "default": "",
+            "title": "System Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "AgentIn",
+        "type": "object"
+      },
+      "AgentOut": {
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "avatar_style": {
+            "anyOf": [
+              {
+                "enum": [
+                  "minimal",
+                  "round",
+                  "tech",
+                  "waveform"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Style"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "created_by_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By Admin"
+          },
+          "created_by_client": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By Client"
+          },
+          "default_question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Question Bank Id"
+          },
+          "engine": {
+            "$ref": "#/components/schemas/EngineParams"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "question_strategy": {
+            "default": "sequential",
+            "enum": [
+              "sequential",
+              "random_n",
+              "easy_to_hard",
+              "random_n_easy_to_hard"
+            ],
+            "title": "Question Strategy",
+            "type": "string"
+          },
+          "rubric": {
+            "$ref": "#/components/schemas/Rubric"
+          },
+          "self_bookable": {
+            "default": false,
+            "title": "Self Bookable",
+            "type": "boolean"
+          },
+          "show_subtitles": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Show Subtitles"
+          },
+          "speaker_lock": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speaker Lock"
+          },
+          "status": {
+            "default": "active",
+            "title": "Status",
+            "type": "string"
+          },
+          "strategy_n": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy N"
+          },
+          "system_prompt": {
+            "default": "",
+            "title": "System Prompt",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "updated_by_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By Admin"
+          },
+          "updated_by_client": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By Client"
+          },
+          "version": {
+            "default": "v1",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "agent_id"
+        ],
+        "title": "AgentOut",
+        "type": "object"
+      },
+      "AgentStat": {
+        "description": "总览「按场景(Agent)分」的单个 Agent 聚合统计。\n\n「场景」= Agent(本项目铁律无场景类型枚举,用途由 Agent 决定)。通过率口径:\n分母 = 有评测结果的会话数(evaluated);分子 = passed 的会话数(优先人工复核 review_passed,\n回退 AI passed;dimension_score 模式无 passed → 按 overall_score>=阈值,由聚合侧折算)。\n未出评测结果(评测中/失败/未完成)的会话计入 total 但**不计入 evaluated 分母**,避免拉低通过率。",
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "agent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Name"
+          },
+          "completed": {
+            "default": 0,
+            "title": "Completed",
+            "type": "integer"
+          },
+          "evaluated": {
+            "default": 0,
+            "title": "Evaluated",
+            "type": "integer"
+          },
+          "pass_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Rate"
+          },
+          "passed": {
+            "default": 0,
+            "title": "Passed",
+            "type": "integer"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "agent_id"
+        ],
+        "title": "AgentStat",
+        "type": "object"
+      },
+      "AgentVersionsOut": {
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "current_version": {
+            "title": "Current Version",
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/AgentOut"
+            },
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "agent_id",
+          "current_version",
+          "versions"
+        ],
+        "title": "AgentVersionsOut",
+        "type": "object"
+      },
+      "ApiClientIn": {
+        "description": "admin 创建 API client(系统集成商凭据,代表 admin 级机器操作整个系统)。",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Scopes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ApiClientIn",
+        "type": "object"
+      },
+      "ApiClientOut": {
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Api Key"
+          },
+          "client_id": {
+            "title": "Client Id",
+            "type": "string"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Scopes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "client_id",
+          "name"
+        ],
+        "title": "ApiClientOut",
+        "type": "object"
+      },
+      "CandidateBookIn": {
+        "properties": {
+          "consent": {
+            "default": false,
+            "title": "Consent",
+            "type": "boolean"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot_id"
+        ],
+        "title": "CandidateBookIn",
+        "type": "object"
+      },
+      "CandidateLinkIn": {
+        "description": "HR 为某候选人 + 环节签发一次性自助链接(design contract)。",
+        "properties": {
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "candidate_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidate Name"
+          },
+          "engagement_id": {
+            "title": "Engagement Id",
+            "type": "string"
+          },
+          "ttl_hours": {
+            "default": 168,
+            "title": "Ttl Hours",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "engagement_id"
+        ],
+        "title": "CandidateLinkIn",
+        "type": "object"
+      },
+      "CandidateLinkOut": {
+        "properties": {
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "engagement_id": {
+            "title": "Engagement Id",
+            "type": "string"
+          },
+          "exp_epoch": {
+            "title": "Exp Epoch",
+            "type": "integer"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "candidate_id",
+          "engagement_id",
+          "exp_epoch"
+        ],
+        "title": "CandidateLinkOut",
+        "type": "object"
+      },
+      "CandidateRescheduleIn": {
+        "properties": {
+          "new_slot_id": {
+            "title": "New Slot Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "new_slot_id"
+        ],
+        "title": "CandidateRescheduleIn",
+        "type": "object"
+      },
+      "CandidateSlotPublic": {
+        "description": "候选人侧看到的可选时段(脱敏:不暴露运营侧信息)。",
+        "properties": {
+          "meeting_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting End"
+          },
+          "meeting_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting Start"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot_id"
+        ],
+        "title": "CandidateSlotPublic",
+        "type": "object"
+      },
+      "CandidateStatusOut": {
+        "description": "候选人侧只见流程状态,不见任何评分/转写/录音(design contract 结果隔离)。",
+        "properties": {
+          "booked": {
+            "default": false,
+            "title": "Booked",
+            "type": "boolean"
+          },
+          "engagement_id": {
+            "title": "Engagement Id",
+            "type": "string"
+          },
+          "meeting_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting End"
+          },
+          "meeting_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting Start"
+          },
+          "slot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slot Id"
+          },
+          "stage": {
+            "default": "not_booked",
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "engagement_id"
+        ],
+        "title": "CandidateStatusOut",
+        "type": "object"
+      },
+      "CsvRowError": {
+        "properties": {
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "title": "Raw",
+            "type": "object"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "line",
+          "reason"
+        ],
+        "title": "CsvRowError",
+        "type": "object"
+      },
+      "DelegationIn": {
+        "description": "staff 自助签发委托 token,授权第三方 agent 代自己预约/查询(design contract)。",
+        "properties": {
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "ttl_hours": {
+            "default": 168,
+            "title": "Ttl Hours",
+            "type": "integer"
+          }
+        },
+        "title": "DelegationIn",
+        "type": "object"
+      },
+      "DelegationOut": {
+        "properties": {
+          "exp_epoch": {
+            "title": "Exp Epoch",
+            "type": "integer"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "mcp_config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mcp Config"
+          },
+          "staff": {
+            "title": "Staff",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "staff",
+          "exp_epoch"
+        ],
+        "title": "DelegationOut",
+        "type": "object"
+      },
+      "DimensionScore": {
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "max_score": {
+            "title": "Max Score",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "score",
+          "max_score"
+        ],
+        "title": "DimensionScore",
+        "type": "object"
+      },
+      "EngineParams": {
+        "properties": {
+          "engine_type": {
+            "const": "three_stage",
+            "default": "three_stage",
+            "title": "Engine Type",
+            "type": "string"
+          },
+          "language": {
+            "default": "zh-CN",
+            "title": "Language",
+            "type": "string"
+          },
+          "llm_model_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llm Model Id"
+          },
+          "max_duration_s": {
+            "default": 1800,
+            "title": "Max Duration S",
+            "type": "integer"
+          },
+          "max_turns": {
+            "default": 9999,
+            "title": "Max Turns",
+            "type": "integer"
+          },
+          "tts_provider": {
+            "anyOf": [
+              {
+                "enum": [
+                  "gpu_omnivoice",
+                  "minimax"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tts Provider"
+          },
+          "voice": {
+            "anyOf": [
+              {
+                "enum": [
+                  "male_std",
+                  "female_std"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voice"
+          }
+        },
+        "title": "EngineParams",
+        "type": "object"
+      },
+      "Excerpt": {
+        "properties": {
+          "audio_offset_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Offset S"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Excerpt",
+        "type": "object"
+      },
+      "FrontendConfig": {
+        "description": "与 frontend/src/lib/config.ts 的 RuntimeConfig 同形(camelCase 即约定,别改蛇形)。",
+        "properties": {
+          "apiBase": {
+            "title": "Apibase",
+            "type": "string"
+          },
+          "authRegion": {
+            "title": "Authregion",
+            "type": "string"
+          },
+          "mcpClientId": {
+            "title": "Mcpclientid",
+            "type": "string"
+          },
+          "mcpOauthCallbackUrl": {
+            "title": "Mcpoauthcallbackurl",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "userPoolClientId": {
+            "title": "Userpoolclientid",
+            "type": "string"
+          },
+          "userPoolId": {
+            "title": "Userpoolid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "userPoolId",
+          "userPoolClientId",
+          "apiBase",
+          "mcpClientId",
+          "mcpOauthCallbackUrl",
+          "authRegion"
+        ],
+        "title": "FrontendConfig",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "LlmCredentialStatusOut": {
+        "properties": {
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "expiring",
+              "expired",
+              "not_configured",
+              "not_applicable"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "LlmCredentialStatusOut",
+        "type": "object"
+      },
+      "MediaEventIn": {
+        "description": "实时会话服务状态回报(事件回调)。事件集:connected | completed | peer_hangup | no_show |\nviolation_end(design contract:违规/物理断连强制结束 → failed)。",
+        "properties": {
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "early_exit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Early Exit"
+          },
+          "end_trigger": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Trigger"
+          },
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "fail_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fail Reason"
+          },
+          "has_recording": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Recording"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "title": "MediaEventIn",
+        "type": "object"
+      },
+      "Question": {
+        "properties": {
+          "difficulty": {
+            "default": 3,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "reference_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Answer"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "weight": {
+            "default": 1.0,
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Question",
+        "type": "object"
+      },
+      "QuestionAnalysis": {
+        "description": "逐题分析(design contract):dimension_score 模式并列产出(该模式原本无逐题结构)。\n与维度分独立:维度分是综合评估,此处 score 是单题得分,两者不强制求和。全字段可选(缺项容错)。",
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "index": {
+            "default": 0,
+            "title": "Index",
+            "type": "integer"
+          },
+          "max_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Score"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "user_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Answer"
+          }
+        },
+        "title": "QuestionAnalysis",
+        "type": "object"
+      },
+      "QuestionBankIn": {
+        "description": "可复用题库(design contract):一份题目集合,可被多个 Agent / 会议挂载。\n\n题库 MUST NOT 含 rubric / engine / 人设(那些是 Agent 的职责)。",
+        "properties": {
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            },
+            "title": "Questions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "QuestionBankIn",
+        "type": "object"
+      },
+      "QuestionBankOut": {
+        "properties": {
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "created_by_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By Admin"
+          },
+          "created_by_client": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By Client"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "question_bank_id": {
+            "title": "Question Bank Id",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "status": {
+            "default": "active",
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "updated_by_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By Admin"
+          },
+          "updated_by_client": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By Client"
+          },
+          "version": {
+            "default": "v1",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "question_bank_id"
+        ],
+        "title": "QuestionBankOut",
+        "type": "object"
+      },
+      "QuestionBankUploadResult": {
+        "description": "题库 CSV 批量上传结果(spec:免逐题手加)。逐行校验:合法行入库、非法行跳过 + 错误明细。",
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/CsvRowError"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "imported": {
+            "title": "Imported",
+            "type": "integer"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          },
+          "question_bank_id": {
+            "title": "Question Bank Id",
+            "type": "string"
+          },
+          "rejected": {
+            "title": "Rejected",
+            "type": "integer"
+          },
+          "total_questions": {
+            "title": "Total Questions",
+            "type": "integer"
+          },
+          "total_rows": {
+            "title": "Total Rows",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "question_bank_id",
+          "mode",
+          "total_rows",
+          "imported",
+          "rejected",
+          "total_questions"
+        ],
+        "title": "QuestionBankUploadResult",
+        "type": "object"
+      },
+      "QuestionBankVersionsOut": {
+        "properties": {
+          "current_version": {
+            "title": "Current Version",
+            "type": "string"
+          },
+          "question_bank_id": {
+            "title": "Question Bank Id",
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionBankOut"
+            },
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "question_bank_id",
+          "current_version",
+          "versions"
+        ],
+        "title": "QuestionBankVersionsOut",
+        "type": "object"
+      },
+      "QuestionCheck": {
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          },
+          "index": {
+            "default": 0,
+            "title": "Index",
+            "type": "integer"
+          },
+          "max_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Score"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "skip_suspected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skip Suspected"
+          },
+          "user_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Answer"
+          }
+        },
+        "required": [
+          "passed"
+        ],
+        "title": "QuestionCheck",
+        "type": "object"
+      },
+      "RealtimeClientSecretOut": {
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "expires_at",
+          "url"
+        ],
+        "title": "RealtimeClientSecretOut",
+        "type": "object"
+      },
+      "ResultOut": {
+        "properties": {
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "agent_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Version"
+          },
+          "dimension_scores": {
+            "items": {
+              "$ref": "#/components/schemas/DimensionScore"
+            },
+            "title": "Dimension Scores",
+            "type": "array"
+          },
+          "evaluation_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluation Error"
+          },
+          "excerpts": {
+            "items": {
+              "$ref": "#/components/schemas/Excerpt"
+            },
+            "title": "Excerpts",
+            "type": "array"
+          },
+          "overall_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overall Score"
+          },
+          "pass_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Ratio"
+          },
+          "passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed"
+          },
+          "question_analyses": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionAnalysis"
+            },
+            "title": "Question Analyses",
+            "type": "array"
+          },
+          "question_checks": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionCheck"
+            },
+            "title": "Question Checks",
+            "type": "array"
+          },
+          "recording_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recording Url"
+          },
+          "review_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Note"
+          },
+          "review_overall_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Overall Score"
+          },
+          "review_passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Passed"
+          },
+          "review_status": {
+            "default": "pending",
+            "title": "Review Status",
+            "type": "string"
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed At"
+          },
+          "reviewer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer"
+          },
+          "rubric_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rubric Mode"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "title": "ResultOut",
+        "type": "object"
+      },
+      "ResultReviewIn": {
+        "properties": {
+          "action": {
+            "enum": [
+              "approve",
+              "override"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "overall_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overall Score"
+          },
+          "passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "ResultReviewIn",
+        "type": "object"
+      },
+      "Rubric": {
+        "description": "rubric 两形态统一建模 —— 二选一(design contract)。\n\n- per_question_check:逐题 ✓/✗ + 通过线(pass_threshold ∈ [0,1]),典型培训 check。\n- dimension_score:维度打分(dimensions[]),典型面试。\n校验在 model_validator:形态合法 + 对应字段齐备 + 权重/通过线合法。",
+        "properties": {
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/RubricDimension"
+            },
+            "title": "Dimensions",
+            "type": "array"
+          },
+          "mode": {
+            "default": "per_question_check",
+            "enum": [
+              "per_question_check",
+              "dimension_score"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "pass_threshold": {
+            "default": 0.8,
+            "title": "Pass Threshold",
+            "type": "number"
+          }
+        },
+        "title": "Rubric",
+        "type": "object"
+      },
+      "RubricDimension": {
+        "description": "dimension_score 形态的单个维度(典型面试)。",
+        "properties": {
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "max_score": {
+            "default": 5.0,
+            "title": "Max Score",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "weight": {
+            "default": 1.0,
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "RubricDimension",
+        "type": "object"
+      },
+      "SessionJoinOut": {
+        "description": "GET /api/sessions/{session_id}/join 响应(M1-B):实时会话连入凭据。\n\n客户端流程:拿 join_token → 连 wss://<站点>{ws_path}?session_id=<id> →\n首帧 {\"type\":\"auth\",\"token\":<join_token>}。生产验签在实时会话服务(bridge)。",
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "join_token": {
+            "title": "Join Token",
+            "type": "string"
+          },
+          "ws_path": {
+            "default": "/rt/ws",
+            "title": "Ws Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "join_token",
+          "expires_at"
+        ],
+        "title": "SessionJoinOut",
+        "type": "object"
+      },
+      "SessionLaunchIn": {
+        "description": "即时开始(deployment validation 转向):发起体只剩 agent_id[+题库/对象绑定]。无预约时间窗——\nsession 创建即可连入;收尾由 Agent.engine.max_duration_s 上限界定,不再录入 meeting_start/end。",
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "booked_by_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booked By Email"
+          },
+          "question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Bank Id"
+          },
+          "target_external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target External Id"
+          }
+        },
+        "required": [
+          "agent_id"
+        ],
+        "title": "SessionLaunchIn",
+        "type": "object"
+      },
+      "SessionOut": {
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "agent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Name"
+          },
+          "agent_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Version"
+          },
+          "booked_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booked By"
+          },
+          "booked_by_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booked By Email"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "end_trigger": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Trigger"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          },
+          "fail_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fail Reason"
+          },
+          "meeting_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting End"
+          },
+          "meeting_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting Start"
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin"
+          },
+          "question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Bank Id"
+          },
+          "question_bank_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Bank Version"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Id"
+          },
+          "target_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Name"
+          },
+          "trigger": {
+            "title": "Trigger",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "agent_id",
+          "status",
+          "trigger"
+        ],
+        "title": "SessionOut",
+        "type": "object"
+      },
+      "SessionStatsOut": {
+        "description": "总览统计聚合(spec:按场景分 + 通过率)。按 Agent 分组,按会话总数倒序。",
+        "properties": {
+          "agents": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/AgentStat"
+            },
+            "title": "Agents",
+            "type": "array"
+          }
+        },
+        "title": "SessionStatsOut",
+        "type": "object"
+      },
+      "SlotIn": {
+        "description": "HR 录入一个面试时段到时段池(design contract 缩水版:纯时间窗,无电话/会议字段)。",
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "engagement_id": {
+            "title": "Engagement Id",
+            "type": "string"
+          },
+          "meeting_end": {
+            "title": "Meeting End",
+            "type": "string"
+          },
+          "meeting_start": {
+            "title": "Meeting Start",
+            "type": "string"
+          },
+          "question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Bank Id"
+          }
+        },
+        "required": [
+          "engagement_id",
+          "agent_id",
+          "meeting_start",
+          "meeting_end"
+        ],
+        "title": "SlotIn",
+        "type": "object"
+      },
+      "SlotOut": {
+        "properties": {
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "claimed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claimed By"
+          },
+          "engagement_id": {
+            "title": "Engagement Id",
+            "type": "string"
+          },
+          "meeting_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting End"
+          },
+          "meeting_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting Start"
+          },
+          "question_bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Bank Id"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "open",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot_id",
+          "engagement_id",
+          "agent_id"
+        ],
+        "title": "SlotOut",
+        "type": "object"
+      },
+      "TranscriptLine": {
+        "description": "一句转写(design contract 转写下载);与 bridge transcript-store / SessionEvents event#<ts> 行对称。",
+        "properties": {
+          "speaker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speaker"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ts"
+          }
+        },
+        "title": "TranscriptLine",
+        "type": "object"
+      },
+      "TranscriptOut": {
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "title": "TranscriptOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "WebhookIn": {
+        "properties": {
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "WebhookIn",
+        "type": "object"
+      },
+      "WebhookOut": {
+        "properties": {
+          "client_id": {
+            "title": "Client Id",
+            "type": "string"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secret"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "webhook_id": {
+            "title": "Webhook Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id",
+          "client_id",
+          "url"
+        ],
+        "title": "WebhookOut",
+        "type": "object"
+      },
+      "WhoAmI": {
+        "properties": {
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "is_admin": {
+            "title": "Is Admin",
+            "type": "boolean"
+          },
+          "is_staff": {
+            "title": "Is Staff",
+            "type": "boolean"
+          },
+          "sub": {
+            "title": "Sub",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sub",
+          "username",
+          "groups",
+          "is_admin",
+          "is_staff"
+        ],
+        "title": "WhoAmI",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "VivaVoce control plane (real-time voice oral-exam). All /api/* endpoints require authentication.",
+    "title": "VivaVoce Orchestrator API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/admin/gpu-capacity": {
+      "get": {
+        "description": "读容量期望配置 + 运行时实况。两者都可能缺失(首次部署 reconciler 尚未写)。",
+        "operationId": "get_capacity_api_admin_gpu_capacity_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Capacity Api Admin Gpu Capacity Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Capacity",
+        "tags": [
+          "admin-capacity"
+        ]
+      },
+      "put": {
+        "description": "改容量配置。校验(mode/count/min/max/util、硬上限)→ 乐观锁条件写(并发 admin 防覆盖)。\n\nbody 须含 expected_version(GET 时读到的 config_version;首次配置传 null/省略)。\n校验失败 400;版本冲突/首次已存在 409。",
+        "operationId": "put_capacity_api_admin_gpu_capacity_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Capacity Api Admin Gpu Capacity Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Capacity",
+        "tags": [
+          "admin-capacity"
+        ]
+      }
+    },
+    "/api/admin/gpu-capacity/instances": {
+      "get": {
+        "description": "逐实例用量(展示用)。MVP **无逐实例明细**(需 NLB target→IP 反查后并发读各实例 /metrics,留 v1);\n本端点返回聚合实况 + `per_instance_source` 标签明示明细数据源状态(review:不返空数组冒充有数据)。",
+        "operationId": "get_instances_api_admin_gpu_capacity_instances_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Instances Api Admin Gpu Capacity Instances Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Instances",
+        "tags": [
+          "admin-capacity"
+        ]
+      }
+    },
+    "/api/admin/llm-config": {
+      "get": {
+        "description": "读 LLM 配置(脱敏)。Secret 未配置(本地/未部署 025)→ fail-closed 503。\n附 recommended(前端预填推荐清单;非强制)。",
+        "operationId": "get_llm_config_api_admin_llm_config_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Llm Config Api Admin Llm Config Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Llm Config",
+        "tags": [
+          "admin-llm"
+        ]
+      },
+      "put": {
+        "description": "改 LLM 配置。校验非密参数 → merge 现有(保留旧 token,除非 body 带 api_key)→ 写 Secret。\n\nbody:host/models/default_model(非密)+ 可选 api_key(写后只脱敏回显)。\n  - 不带 api_key / api_key=\"\":保留现有 token(前端密码框留空即不改);\n  - api_key 非空:替换。\n校验:host https、models 结构、default_model ∈ models(合并后)。",
+        "operationId": "put_llm_config_api_admin_llm_config_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Llm Config Api Admin Llm Config Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Llm Config",
+        "tags": [
+          "admin-llm"
+        ]
+      }
+    },
+    "/api/admin/system-settings": {
+      "get": {
+        "description": "聚合四段来源(并行 + 短超时);单子系统故障不影响整体 200。",
+        "operationId": "get_system_settings_api_admin_system_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get System Settings Api Admin System Settings Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get System Settings",
+        "tags": [
+          "admin-settings"
+        ]
+      }
+    },
+    "/api/admin/tts-config": {
+      "get": {
+        "description": "读 MiniMax 配置(脱敏)。Secret 未配置(本地/未部署 019)→ fail-closed 503。",
+        "operationId": "get_tts_config_api_admin_tts_config_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Tts Config Api Admin Tts Config Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Tts Config",
+        "tags": [
+          "admin-tts"
+        ]
+      },
+      "put": {
+        "description": "改 MiniMax 配置。校验非密参数 → merge 现有(保留旧 key,除非 body 带 api_key)→ 写 Secret →\nbest-effort 调 GPU /reload-tts-config,把重载回执透传前端(\"已生效\"/\"key 无效\")。\n\nbody:enabled/base_url/model/voice_map(非密)+ 可选 api_key(写后只脱敏回显)。\n  - 不带 api_key / api_key=\"\":保留现有 key(前端密码框留空即不改);\n  - api_key 非空:替换。\n校验:enabled=true 但合并后无有效 key(既没现存、也没新填)→ 400(不让\"启用却无 key\"落库;\n关闭 enabled=false 时允许无 key,disable 态)。",
+        "operationId": "put_tts_config_api_admin_tts_config_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Tts Config Api Admin Tts Config Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Tts Config",
+        "tags": [
+          "admin-tts"
+        ]
+      }
+    },
+    "/api/admin/tts-config/voices": {
+      "get": {
+        "description": "查账号下可用音色清单(MiniMax get_voice),供前端下拉选 voice_id。\n\n返回 {voices:[{voice_id,voice_name,category}], available:bool}。无 key / get_voice 不可达\n→ available=false + 空列表(前端回退到手填,不报错)。明文 key 不回显。",
+        "operationId": "get_available_voices_api_admin_tts_config_voices_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Available Voices Api Admin Tts Config Voices Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Available Voices",
+        "tags": [
+          "admin-tts"
+        ]
+      }
+    },
+    "/api/agents": {
+      "get": {
+        "operationId": "list_agents_api_agents_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgentOut"
+                  },
+                  "title": "Response List Agents Api Agents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Agents",
+        "tags": [
+          "agents"
+        ]
+      },
+      "post": {
+        "operationId": "create_agent_api_agents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/agents/{agent_id}": {
+      "delete": {
+        "description": "删除 Agent(design contract,仅 admin)。\n\n不存在 → 404;仍被**活动会话**(scheduled/in_progress)或**招聘时段 Slot**引用 → 409\n(先处理引用再删,避免悬挂引用)。终态/历史会话不挡(已快照版本)。",
+        "operationId": "delete_agent_api_agents__agent_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Agent",
+        "tags": [
+          "agents"
+        ]
+      },
+      "get": {
+        "operationId": "get_agent_api_agents__agent_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Agent",
+        "tags": [
+          "agents"
+        ]
+      },
+      "put": {
+        "description": "改版不覆盖历史(design contract):当前版本入 version_history、version bump。",
+        "operationId": "update_agent_api_agents__agent_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/agents/{agent_id}/versions": {
+      "get": {
+        "description": "版本历史(design contract):当前版本 + 历史快照,供报告按发起时版本回溯依据。",
+        "operationId": "get_agent_versions_api_agents__agent_id__versions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentVersionsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Agent Versions",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/candidate/book": {
+      "post": {
+        "description": "候选人选时段(认领时段 + 知情同意)。返回 slot/session/起止。",
+        "operationId": "candidate_book_api_candidate_book_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CandidateBookIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Candidate Book Api Candidate Book Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Book",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/candidate/cancel": {
+      "post": {
+        "description": "候选人取消预约(距开始 >30min);释放时段回池。",
+        "operationId": "candidate_cancel_api_candidate_cancel_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Candidate Cancel Api Candidate Cancel Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Cancel",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/candidate/join": {
+      "get": {
+        "description": "候选人连入实时对话(design contract-C 收口):凭一次性 token 定位其预约的会话 → 签发 join_token。\n\n鉴权:候选人 token(cid/eid)权威定位 session,只能连自己预约的(不信任何入参 session_id)。\n窗口校验 + 预创建 + 签 token 复用 admin join 的 issue_join_token(同一 fail-closed / 窗口口径)。\n客户端拿 join_token 后连 wss://<站点>/rt/ws?session_id=<id>,与 admin/staff 路径同协议。",
+        "operationId": "candidate_join_api_candidate_join_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionJoinOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Join",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/candidate/reschedule": {
+      "post": {
+        "description": "候选人改约到另一空闲时段(design contract);距开始 >30min;原子换时段(先认领新再释放旧)。",
+        "operationId": "candidate_reschedule_api_candidate_reschedule_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CandidateRescheduleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Candidate Reschedule Api Candidate Reschedule Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Reschedule",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/candidate/slots": {
+      "get": {
+        "description": "候选人看可选时段(脱敏:只 slot_id + 起止)。",
+        "operationId": "candidate_open_slots_api_candidate_slots_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CandidateSlotPublic"
+                  },
+                  "title": "Response Candidate Open Slots Api Candidate Slots Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Open Slots",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/candidate/status": {
+      "get": {
+        "description": "候选人侧状态(只见流程态,不见评分/转写/录音)。",
+        "operationId": "candidate_status_api_candidate_status_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-candidate-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Candidate-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidate Status",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/engagements/links": {
+      "post": {
+        "description": "为候选人 + 环节签发一次性自助链接(token)。\n\n校验:该环节必须**至少有一个时段**(防 fix:无时段就签 → 候选人点开链接无可选时段、死路)。\n候选人只能从已有时段里选,故签链接前 HR 须先建好时段池(design contract 流程:先录时段→签链接)。",
+        "operationId": "issue_link_api_engagements_links_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CandidateLinkIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateLinkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Issue Link",
+        "tags": [
+          "candidate-hr"
+        ]
+      }
+    },
+    "/api/engagements/slots": {
+      "post": {
+        "description": "HR 录入一个面试时段(纯时间窗)到时段池。",
+        "operationId": "add_slot_api_engagements_slots_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SlotOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add Slot",
+        "tags": [
+          "candidate-hr"
+        ]
+      }
+    },
+    "/api/engagements/{engagement_id}/slots": {
+      "get": {
+        "description": "HR 看某环节全部时段(含已认领,带候选人/会话)。",
+        "operationId": "list_slots_api_engagements__engagement_id__slots_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "engagement_id",
+            "required": true,
+            "schema": {
+              "title": "Engagement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SlotOut"
+                  },
+                  "title": "Response List Slots Api Engagements  Engagement Id  Slots Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Slots",
+        "tags": [
+          "candidate-hr"
+        ]
+      }
+    },
+    "/api/integration/agents": {
+      "get": {
+        "description": "机器列出全部 Agent(admin 级,非 self_bookable_only —— 与 admin Web 后台一致)。",
+        "operationId": "api_list_agents_api_integration_agents_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgentOut"
+                  },
+                  "title": "Response Api List Agents Api Integration Agents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api List Agents",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "post": {
+        "description": "机器建 Agent(复用 admin 路由逻辑:default_question_bank_id 存在性校验 + 打审计字段)。",
+        "operationId": "api_create_agent_api_integration_agents_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Create Agent",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/agents/{agent_id}": {
+      "delete": {
+        "description": "机器删 Agent(复用 assert_agent_deletable:活动会话 / 时段 Slot 引用 → 409)。",
+        "operationId": "api_delete_agent_api_integration_agents__agent_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Delete Agent",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "get": {
+        "operationId": "api_get_agent_api_integration_agents__agent_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Agent",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "put": {
+        "description": "机器改 Agent(复用 db.update_agent 的版本快照:当前版入 history、bump version)。",
+        "operationId": "api_update_agent_api_integration_agents__agent_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Update Agent",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/clients": {
+      "get": {
+        "operationId": "list_clients_api_integration_clients_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ApiClientOut"
+                  },
+                  "title": "Response List Clients Api Integration Clients Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Clients",
+        "tags": [
+          "integration-admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_client_api_integration_clients_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiClientIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiClientOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Client",
+        "tags": [
+          "integration-admin"
+        ]
+      }
+    },
+    "/api/integration/clients/{client_id}": {
+      "delete": {
+        "operationId": "revoke_client_api_integration_clients__client_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "client_id",
+            "required": true,
+            "schema": {
+              "title": "Client Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revoke Client",
+        "tags": [
+          "integration-admin"
+        ]
+      }
+    },
+    "/api/integration/question-banks": {
+      "get": {
+        "operationId": "api_list_question_banks_api_integration_question_banks_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QuestionBankOut"
+                  },
+                  "title": "Response Api List Question Banks Api Integration Question Banks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api List Question Banks",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "post": {
+        "operationId": "api_create_question_bank_api_integration_question_banks_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionBankIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Create Question Bank",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/question-banks/{question_bank_id}": {
+      "delete": {
+        "description": "机器删题库(复用 assert_qb_deletable:活动会话 / Agent 默认 / 时段 Slot 引用 → 409)。",
+        "operationId": "api_delete_question_bank_api_integration_question_banks__question_bank_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Delete Question Bank",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "get": {
+        "operationId": "api_get_question_bank_api_integration_question_banks__question_bank_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Question Bank",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "put": {
+        "description": "机器改题库(复用 db.update_question_bank 版本快照)。",
+        "operationId": "api_update_question_bank_api_integration_question_banks__question_bank_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionBankIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Update Question Bank",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/question-banks/{question_bank_id}/upload-csv": {
+      "post": {
+        "description": "机器批量上传题库 CSV(复用 parse_questions_csv + replace 0 题保护;body = 原始 CSV 文本 UTF-8)。",
+        "operationId": "api_upload_csv_api_integration_question_banks__question_bank_id__upload_csv_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "default": "append",
+              "pattern": "^(append|replace)$",
+              "title": "Mode",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankUploadResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Upload Csv",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/results/{session_id}": {
+      "get": {
+        "description": "机器读评分报告(全局读:API Key = admin 级,报告复核本是 admin 能力)。",
+        "operationId": "api_get_result_api_integration_results__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Result",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/sessions": {
+      "post": {
+        "description": "第三方经 API Key 程序化发起会话(design contract):复用 005 同一路径/状态机/全局闸门 + 幂等。\n\n资源隔离:打 created_by_client 标记,机器只能查自己创建的(api_get_session 据此)。",
+        "operationId": "api_launch_session_api_integration_sessions_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionLaunchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Launch Session",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/sessions/{session_id}": {
+      "get": {
+        "description": "机器查会话:资源隔离 —— 只能查本 client 创建的(否则 404,不泄露存在性)。",
+        "operationId": "api_get_session_api_integration_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Session",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/sessions/{session_id}/join": {
+      "get": {
+        "description": "机器为**自己创建**的会话签发实时会话 join token(design contract):补齐「对外语音后端」\n唯一缺环——持 API Key 的第一方后端据此把会话驱动进实时语音(客户端凭 join_token 连\nwss://<入口>/rt/ws?session_id=<id>,首帧 {\"type\":\"auth\",\"token\":<join_token>})。\n\n**scope 复用 `sessions:write`(design contract 评审裁决,勿拆 `sessions:join`)**:「能程序化发起\n会话」在业务语义上已蕴含「能驱动它连入实时对话」;只读监控类集成拿 `sessions:read` 天然\n签不了票,最小授权仍成立。\n\n**GET + 天然幂等**:与登录路径 `GET /api/sessions/{id}/join` HTTP 动词对齐;同一 session_id\n同一秒签出的 token(HMAC over `v1.<sid>.<exp>`)逐字节相同,故不设 Idempotency-Key。\n\n资源隔离(fail-closed,复用 api_get_session 口径):会话不存在 / created_by_client 不符 →\n404(不泄露存在性),不为他 client 或前端用户创建的会话签票。签发本身(状态校验 409 /\n密钥缺失 503 / best-effort 重新预创建 / HMAC 签名 / 固定 4h TTL)**复用** sessions.py 的\nissue_join_token,不另写一套(与登录/候选人路径同一实现)。",
+        "operationId": "api_join_session_api_integration_sessions__session_id__join_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionJoinOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Join Session",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/sessions/{session_id}/realtime-client-secret": {
+      "post": {
+        "operationId": "api_realtime_client_secret_api_integration_sessions__session_id__realtime_client_secret_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtimeClientSecretOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Realtime Client Secret",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/webhooks": {
+      "get": {
+        "operationId": "list_webhooks_api_integration_webhooks_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookOut"
+                  },
+                  "title": "Response List Webhooks Api Integration Webhooks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Webhooks",
+        "tags": [
+          "integration-api"
+        ]
+      },
+      "post": {
+        "operationId": "register_webhook_api_integration_webhooks_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Webhook",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/integration/webhooks/{webhook_id}": {
+      "delete": {
+        "operationId": "delete_webhook_api_integration_webhooks__webhook_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "webhook_id",
+            "required": true,
+            "schema": {
+              "title": "Webhook Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Webhook",
+        "tags": [
+          "integration-api"
+        ]
+      }
+    },
+    "/api/llm-credential-status": {
+      "get": {
+        "operationId": "get_llm_credential_status_api_llm_credential_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlmCredentialStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Llm Credential Status",
+        "tags": [
+          "llm-status"
+        ]
+      }
+    },
+    "/api/mcp": {
+      "get": {
+        "description": "MCP GET(可选 SSE 流):本实现不提供服务器推送。\n\ndesign contract:未认证 GET 返回 **401 + challenge**(而非裸 405)—— 若目标 client 先开 GET(SSE)探测再\n进发现流,405 可能使其不进 OAuth;返回带 `WWW-Authenticate` 的 401 让 OAuth-aware client 进发现。\n已认证但无 SSE 可推 → 405(transport 允许)。",
+        "operationId": "mcp_get_api_mcp_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mcp Get",
+        "tags": [
+          "mcp"
+        ]
+      },
+      "post": {
+        "description": "MCP JSON-RPC 端点。Bearer / 委托 token 鉴权 → 解析 staff → 处理 initialize/tools.list/tools.call。",
+        "operationId": "mcp_endpoint_api_mcp_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          },
+          {
+            "in": "header",
+            "name": "mcp-protocol-version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Mcp-Protocol-Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mcp Endpoint",
+        "tags": [
+          "mcp"
+        ]
+      }
+    },
+    "/api/me": {
+      "get": {
+        "operationId": "whoami_api_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhoAmI"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Whoami",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/api/me/delegations": {
+      "post": {
+        "description": "staff 自助签发委托 token,授权第三方 agent 代自己预约/查询(design contract)。\n\nadmin 也可调(代任意身份意义不大,这里按调用者 username 绑定)。",
+        "operationId": "issue_delegation_api_me_delegations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DelegationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DelegationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Issue Delegation",
+        "tags": [
+          "integration-delegation"
+        ]
+      }
+    },
+    "/api/question-banks": {
+      "get": {
+        "operationId": "list_question_banks_api_question_banks_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QuestionBankOut"
+                  },
+                  "title": "Response List Question Banks Api Question Banks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Question Banks",
+        "tags": [
+          "question-banks"
+        ]
+      },
+      "post": {
+        "operationId": "create_question_bank_api_question_banks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionBankIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Question Bank",
+        "tags": [
+          "question-banks"
+        ]
+      }
+    },
+    "/api/question-banks/csv-template": {
+      "get": {
+        "description": "下载题库 CSV 模板(表头 + 一行示例)。text 必填,reference_answer/weight/difficulty\n可留空用默认(weight=1.0 / difficulty=3)。design contract:题目级 follow_up 已废弃,模板不含该列。",
+        "operationId": "download_csv_template_api_question_banks_csv_template_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Download Csv Template",
+        "tags": [
+          "question-banks"
+        ]
+      }
+    },
+    "/api/question-banks/{question_bank_id}": {
+      "delete": {
+        "description": "删除题库(design contract,仅 admin)。引用完整性检查(409):\n\n被以下任一引用时挡删 —— ① 活动会话(question_bank_id 字段);② 任何时段池 Slot;\n③ 任何 Agent 的 default_question_bank_id(否则留悬挂默认)。\n已固化 resolved_questions 的(终态/历史)会话不算引用(快照独立)。",
+        "operationId": "delete_question_bank_api_question_banks__question_bank_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Question Bank",
+        "tags": [
+          "question-banks"
+        ]
+      },
+      "get": {
+        "operationId": "get_question_bank_api_question_banks__question_bank_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Question Bank",
+        "tags": [
+          "question-banks"
+        ]
+      },
+      "put": {
+        "description": "改版不覆盖历史(design contract):当前版本入 version_history、version bump。",
+        "operationId": "update_question_bank_api_question_banks__question_bank_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionBankIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Question Bank",
+        "tags": [
+          "question-banks"
+        ]
+      }
+    },
+    "/api/question-banks/{question_bank_id}/upload-csv": {
+      "post": {
+        "description": "批量上传题库 CSV(免逐题手加)。body = 原始 CSV 文本(UTF-8)。逐行校验:合法行入库、\n非法行跳过并返回错误明细。mode=append 追加到现有题目;mode=replace 整批替换题库题目。\n改版语义沿用 update_question_bank(当前版本入 version_history、version bump)。",
+        "operationId": "upload_csv_api_question_banks__question_bank_id__upload_csv_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "default": "append",
+              "pattern": "^(append|replace)$",
+              "title": "Mode",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankUploadResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upload Csv",
+        "tags": [
+          "question-banks"
+        ]
+      }
+    },
+    "/api/question-banks/{question_bank_id}/versions": {
+      "get": {
+        "operationId": "get_question_bank_versions_api_question_banks__question_bank_id__versions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_bank_id",
+            "required": true,
+            "schema": {
+              "title": "Question Bank Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionBankVersionsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Question Bank Versions",
+        "tags": [
+          "question-banks"
+        ]
+      }
+    },
+    "/api/results/{session_id}": {
+      "get": {
+        "operationId": "get_result_api_results__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Result",
+        "tags": [
+          "results"
+        ]
+      },
+      "patch": {
+        "description": "admin 人工复核(design contract)。staff 无复核权限(本端点 require_admin)。\n\n- approve:review_status=approved,不动判定。\n- override:review_status=overridden,写人工改判(review_passed / review_overall_score),\n  AI 原始分(passed / overall_score)保留不变(双轨)。",
+        "operationId": "review_result_api_results__session_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResultReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Review Result",
+        "tags": [
+          "results"
+        ]
+      }
+    },
+    "/api/results/{session_id}/transcript": {
+      "get": {
+        "description": "整场转写(design contract「转写下载」)。同 GET 结果的归属校验:staff 只能取自己会话的转写。\n\n转写在结束后于结果页一次性可看/下载(design contract 明确不做进行中实时转写流)。",
+        "operationId": "get_transcript_api_results__session_id__transcript_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscriptOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Transcript",
+        "tags": [
+          "results"
+        ]
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "operationId": "list_sessions_api_sessions_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SessionOut"
+                  },
+                  "title": "Response List Sessions Api Sessions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Sessions",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "post": {
+        "operationId": "launch_session_api_sessions_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionLaunchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Launch Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/stats": {
+      "get": {
+        "description": "总览「按场景(Agent)分 + 通过率」聚合。staff 只统计自己的会话(归属隔离,不信前端)。\n\n通过率 = passed 会话 / 有评测结果的会话(evaluated 为分母);未出结果的会话计入 total 不计 evaluated。\nSession×Result 按 session_id join;结果归属由「可见 session 集合」保证(不单独信任 Results scan)。",
+        "operationId": "session_stats_api_sessions_stats_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Session Stats",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}": {
+      "delete": {
+        "description": "取消待开始的会话(即时开始转向后去 30min 锁):仅 scheduled 可取消 → failed(cancelled)。",
+        "operationId": "cancel_session_api_sessions__session_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Session",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "get": {
+        "operationId": "get_session_api_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/events": {
+      "post": {
+        "description": "实时服务→控制面状态回报。**鉴权 = 共享密钥**(实时服务非 Cognito 用户)。\n\n这是 `scheduled → in_progress → completed` 的真实驱动来源(客户端连入/结束由实时服务回报)。\nfail-closed:密钥未配/不符 → 503/401。",
+        "operationId": "media_event_api_sessions__session_id__events_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-bridge-secret",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Bridge-Secret"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaEventIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Media Event",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/hangup": {
+      "post": {
+        "description": "admin 提前结束进行中会话(design contract):下发 hangup → completed → 触发评估。",
+        "operationId": "hangup_session_api_sessions__session_id__hangup_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Hangup Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/join": {
+      "get": {
+        "description": "签发实时会话 join token(M1-B):客户端凭它连 wss://<站点>/rt/ws?session_id=<id>,\n首帧 {\"type\":\"auth\",\"token\":<join_token>}。生产验签在实时会话服务(bridge)。\n\n鉴权(review):require_staff_or_delegation —— 角色必须来自 Cognito Group(admin/staff),\n不能把「任意已认证用户」当 staff(用户名巧合匹配 booked_by 即越权,与 launch 同口径)。\n归属:沿用列表/详情口径(admin 任意;staff 仅本人,不信前端入参)。\ncandidate(免登录链接考生)场景:另立 candidate join 端点用 X-Candidate-Token 鉴权(M1-C 接\nCandidatePortal 时补),本端点不揽。\n前置:仅 scheduled/in_progress 可连入(终态 409)。即时开始模型无时间窗校验(创建即可连);\n超时未连入由调度器判过期(scheduled→failed,此后 409)。\n签发前**重新预创建**(best-effort 重发就绪指令):闭合「实时服务重启丢内存上下文」缺口 ——\n/join 总是先把会话内核重新暂存过去;失败只告警不阻断签发(实时服务缺上下文时\n客户端会拿到 not_ready 自行重试)。",
+        "operationId": "join_session_api_sessions__session_id__join_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-delegation-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Delegation-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionJoinOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Join Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/config.json": {
+      "get": {
+        "operationId": "frontend_config_config_json_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendConfig"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Frontend Config",
+        "tags": [
+          "frontend-config"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  }
+}

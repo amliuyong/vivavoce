@@ -1,0 +1,47 @@
+VivaVoce
+
+--------------------------------------------------------------------------------
+Third-party components
+--------------------------------------------------------------------------------
+
+This project depends on third-party components. Each remains under its own
+license; this NOTICE does not modify those terms.
+
+Runtime dependencies are declared in the per-subsystem manifests
+(`*/package.json`, `*/requirements*.txt`, `*/pyproject.toml`) and are subject to
+their respective upstream licenses.
+
+External model components (not stored in this Git repository)
+-------------------------------------------------------------
+  FunASR — https://github.com/modelscope/FunASR
+      Runtime ASR dependency.
+
+  CAM++ (via FunASR / ModelScope) — https://www.modelscope.cn/
+      Runtime speaker-embedding model.
+
+  OmniVoice model weights — https://github.com/k2-fsa/OmniVoice
+      Runtime TTS model weights.
+
+  Model weights must be obtained and distributed separately under their
+  applicable upstream terms. The Apache-2.0 license for this repository does
+  not grant rights to third-party model weights.
+
+  Reference-voice audio and matching transcripts are also not distributed in
+  this Git repository. Operators must provide assets they are authorized to use.
+
+Vendored source code
+--------------------
+  OmniVoice — https://github.com/k2-fsa/OmniVoice
+      Runtime TTS inference implementation. This repository carries only the
+      inference source files needed by `gpu/gpu_service/funasr_backend.py`.
+      Upstream baseline:
+      33a8ca325d9c95df20512b36864b9041c7532b35
+      Copyright 2026 Xiaomi Corp.
+      License: Apache-2.0 (full text: `gpu/vendor/LICENSE`)
+      Local modifications and source provenance are documented in
+      `gpu/vendor/omnivoice/UPSTREAM.md`.
+
+--------------------------------------------------------------------------------
+
+For the full text of the Apache License, Version 2.0 under which this project is
+released, see the LICENSE file in the root of this repository.

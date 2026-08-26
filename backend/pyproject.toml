@@ -1,0 +1,51 @@
+[project]
+name = "vivavoce-backend"
+version = "0.1.0"
+description = "VivaVoce control-plane API with Cognito JWT authentication"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "boto3>=1.35",
+    "python-jose[cryptography]>=3.3",
+    "httpx>=0.27",
+    "pydantic>=2.9",
+    # voice_test.py 运行时直接 import websockets(后端扮演 Bridge 连 GPU WS);
+    # 此前仅靠 uvicorn[standard] 传递带入,显式声明避免 extras 变动导致运行时 ImportError。
+    "websockets>=13",
+    # Nova Sonic S2S 双向流(voice-test 网页 e2e 的可选引擎;boto3 同步不支持 Bidirectional)。
+    # AWS 官方异步实验包,带 invoke_model_with_bidirectional_stream。
+    "aws-sdk-bedrock-runtime>=0.6",
+    # awscrt:Nova 双向流走 CRT HTTP/2 client(AWSCRTHTTPClient)。非 smithy-http 强制依赖,
+    # 必须显式声明,否则 Fargate 镜像缺 awscrt → 运行时 ImportError。
+    "awscrt>=0.27",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.3",
+    "httpx>=0.27",
+    "moto[dynamodb]>=5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+# 务实基线:pyflakes(F) + pycodestyle(E/W) + isort(I) + pyupgrade(UP) + bugbear(B)
+select = ["E", "W", "F", "I", "UP", "B"]
+ignore = [
+    "E501",   # 行长交给 formatter,不硬卡(中文注释易超)
+    "B008",   # FastAPI 依赖注入惯用 Depends() 默认参数
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]  # 测试里 assert 惯用

@@ -1,0 +1,9 @@
+node_modules
+cdk.out
+*.js
+!jest.config.js
+# lambda/ 下是手写 JS 源(非 tsc 产物),不被 *.js 忽略
+!lambda/**/*.js
+*.d.ts
+.cdk.staging
+*.tsbuildinfo

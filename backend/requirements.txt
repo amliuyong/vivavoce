@@ -1,0 +1,11 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+boto3>=1.35
+python-jose[cryptography]>=3.3
+httpx>=0.27
+pydantic>=2.9
+websockets>=13
+# Nova Sonic S2S 双向流(voice-test engine=s2s);boto3 同步不支持 Bidirectional。
+# 镜像从本文件装依赖(非 pyproject),故必须在此声明,否则线上 ImportError(用户实测)。
+aws-sdk-bedrock-runtime>=0.6
+awscrt>=0.27

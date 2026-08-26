@@ -1,0 +1,7 @@
+{
+  "region": "us-east-1",
+  "userPoolId": "",
+  "userPoolClientId": "",
+  "apiBase": "/api",
+  "authRegion": "us-east-1"
+}

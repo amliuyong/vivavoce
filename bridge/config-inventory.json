@@ -1,0 +1,1343 @@
+{
+ "schema_version": 1,
+ "subsystem": "bridge",
+ "note": "design contract 冻结清单 —— 唯一事实源。由 tools/gen-key-inventory.py 生成,勿手改。registry 的 default 对 default_source != literal 的项 MUST 复用源模块导出/函数,MUST NOT 抄值(实测手抄 46% 出错)。",
+ "counts": {
+  "total": 93,
+  "included": 85,
+  "excluded": 8
+ },
+ "entries": [
+  {
+   "key": "AIM_ADVANCE_AFTER_NUDGE_MS",
+   "status": "included",
+   "default_source": "derived",
+   "reads": [
+    {
+     "default": null,
+     "file": "media-config.ts",
+     "kind": "derived",
+     "line": 178
+    }
+   ]
+  },
+  {
+   "key": "AIM_ADVANCE_NUDGE_MS",
+   "status": "included",
+   "default_source": "derived",
+   "reads": [
+    {
+     "default": null,
+     "file": "media-config.ts",
+     "kind": "derived",
+     "line": 173
+    }
+   ]
+  },
+  {
+   "key": "AIM_AI_SPEAKING_MAX_IDLE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.aiDoneWatchdog.maxIdleMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 389
+    }
+   ]
+  },
+  {
+   "key": "AIM_ANSWER_GRACE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "clamp": [
+      0.0,
+      10000.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.answerGrace.defaultMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 398
+    }
+   ]
+  },
+  {
+   "key": "AIM_AUTO_NEXT_GRACE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "clamp": [
+      0.0,
+      10000.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.answerGrace.autoNextMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 399
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_CONFIRM_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.confirmMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 355
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DTD",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "turn-handling.ts",
+     "kind": "bool_default_on",
+     "line": 358
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DTD_ECHO_GAIN",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.dtdEchoGain",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 360
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DTD_FLOOR",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.dtdFloor",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 359
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DTD_WINDOW_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.bargeDtdWindowMs",
+     "file": "media-config.ts",
+     "kind": "num_inline",
+     "line": 209
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DYN_FLOOR",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "turn-handling.ts",
+     "kind": "bool_default_on",
+     "line": 361
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DYN_FLOOR_K",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.dynFloorK",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 363
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_DYN_FLOOR_WINDOW_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.dynFloorWindowMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 362
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_HANGOVER_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.hangoverMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 356
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_OPEN_COOLDOWN_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.openCooldownMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 378
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_OPEN_COOLDOWN_MULT",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.openCooldownMult",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 379
+    }
+   ]
+  },
+  {
+   "key": "AIM_BARGE_RMS_THRESHOLD",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.rmsThreshold",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 354
+    }
+   ]
+  },
+  {
+   "key": "AIM_BRIDGE_CALLBACK_SECRET",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "",
+     "file": "callback.ts",
+     "kind": "str",
+     "line": 37
+    },
+    {
+     "default": "",
+     "file": "index.ts",
+     "kind": "str",
+     "line": 67
+    }
+   ],
+   "exclude_reason": "secret"
+  },
+  {
+   "key": "AIM_CALM_TONE",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "prompt-compose.ts",
+     "kind": "bool_default_on",
+     "line": 33
+    }
+   ]
+  },
+  {
+   "key": "AIM_CANCEL_ACK_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.cancelAckTimeoutMs",
+     "file": "engine-config.ts",
+     "kind": "num_inline",
+     "line": 49
+    }
+   ]
+  },
+  {
+   "key": "AIM_CONTROL_CALLBACK_URL",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "",
+     "file": "callback.ts",
+     "kind": "str",
+     "line": 36
+    }
+   ],
+   "exclude_reason": "addressing"
+  },
+  {
+   "key": "AIM_CONVERSE_KEEPALIVE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "CONVERSE_KEEPALIVE_DEFAULT_MS",
+     "file": "bedrock-converse-llm.ts",
+     "kind": "num_or",
+     "line": 42
+    }
+   ]
+  },
+  {
+   "key": "AIM_CURSOR_VOICED_GATE",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": false,
+     "file": "engine-config.ts",
+     "kind": "bool_default_off",
+     "line": 55
+    }
+   ]
+  },
+  {
+   "key": "AIM_CURSOR_VOICED_MAX_STALL",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.cursorVoicedMaxStall",
+     "file": "engine-config.ts",
+     "kind": "num_inline",
+     "line": 58
+    }
+   ]
+  },
+  {
+   "key": "AIM_EMBEDDING_SECRET",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "",
+     "file": "speaker-lock.ts",
+     "kind": "str",
+     "line": 115
+    }
+   ],
+   "exclude_reason": "secret"
+  },
+  {
+   "key": "AIM_ENDPOINT_MIN_SPEECH_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.endpointing.minSpeechMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 351
+    }
+   ]
+  },
+  {
+   "key": "AIM_ENDPOINT_RMS_THRESHOLD",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.endpointing.rmsThreshold",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 349
+    }
+   ]
+  },
+  {
+   "key": "AIM_ENDPOINT_SILENCE_GAP_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.endpointing.silenceGapMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 350
+    }
+   ]
+  },
+  {
+   "key": "AIM_EOU_CORRELATION_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "eouVerdictTimeoutMs(",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 423
+    }
+   ]
+  },
+  {
+   "key": "AIM_EOU_SUB_THRESHOLD_MULT",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.eouCorrection.subThresholdMult",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 434
+    }
+   ]
+  },
+  {
+   "key": "AIM_EOU_SUB_THRESHOLD_WINDOW_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.eouCorrection.subThresholdWindowMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 428
+    }
+   ]
+  },
+  {
+   "key": "AIM_EOU_VERDICT_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "BYPASS_LLM_TIMEOUT_DEFAULTS.eouVerdictMs",
+     "file": "bypass-llm-config.ts",
+     "kind": "num",
+     "line": 69
+    }
+   ]
+  },
+  {
+   "key": "AIM_FALSE_INTERRUPTION_MAX_HOLD_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.recoveryMaxHoldMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 376
+    }
+   ]
+  },
+  {
+   "key": "AIM_FALSE_INTERRUPTION_TAKEOVER_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.recoveryTakeoverMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 370
+    }
+   ]
+  },
+  {
+   "key": "AIM_FALSE_INTERRUPTION_WINDOW_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.recoveryWindowMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 369
+    }
+   ]
+  },
+  {
+   "key": "AIM_FAREWELL_DRAIN_MAX_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.farewellDrainMaxMs",
+     "file": "media-config.ts",
+     "kind": "num_inline",
+     "line": 133
+    }
+   ]
+  },
+  {
+   "key": "AIM_FAREWELL_HANGUP",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "media-config.ts",
+     "kind": "bool_default_on",
+     "line": 118
+    }
+   ]
+  },
+  {
+   "key": "AIM_FAREWELL_HANGUP_DELAY_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.farewellHangupDelayMs",
+     "file": "media-config.ts",
+     "kind": "num_inline",
+     "line": 121
+    }
+   ]
+  },
+  {
+   "key": "AIM_FAREWELL_TAIL_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.farewellTailMs",
+     "file": "media-config.ts",
+     "kind": "num_inline",
+     "line": 130
+    }
+   ]
+  },
+  {
+   "key": "AIM_FORCED_END_MAX_WAIT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.forcedEndMaxWaitMs",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 197
+    }
+   ]
+  },
+  {
+   "key": "AIM_GPU_EMBEDDING_URL",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "",
+     "file": "speaker-lock.ts",
+     "kind": "str",
+     "line": 114
+    }
+   ],
+   "exclude_reason": "addressing"
+  },
+  {
+   "key": "AIM_GPU_WS_URL",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "",
+     "file": "engine-factory.ts",
+     "kind": "str",
+     "line": 73
+    }
+   ],
+   "exclude_reason": "addressing"
+  },
+  {
+   "key": "AIM_IDLE_CHATTER_MIN_TURNS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.idleChatterMinTurns",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 190
+    }
+   ]
+  },
+  {
+   "key": "AIM_INTERACTION_STYLE",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "prompt-compose.ts",
+     "kind": "bool_default_on",
+     "line": 37
+    }
+   ]
+  },
+  {
+   "key": "AIM_INTERRUPTION_MIN_WORDS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.minWords",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 357
+    }
+   ]
+  },
+  {
+   "key": "AIM_KICKOFF_WAKE_TEXT",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.kickoffWakeText",
+     "file": "engine-config.ts",
+     "kind": "str",
+     "line": 53
+    }
+   ]
+  },
+  {
+   "key": "AIM_LLM_FALLBACK_ATTEMPT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "LLM_FALLBACK_ATTEMPT_DEFAULT_MS",
+     "file": "fallback-llm.ts",
+     "kind": "num_inline",
+     "line": 37
+    }
+   ]
+  },
+  {
+   "key": "AIM_LLM_MODEL_ID",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+     "file": "bedrock-llm.ts",
+     "kind": "str",
+     "line": 75
+    }
+   ],
+   "exclude_reason": "addressing"
+  },
+  {
+   "key": "AIM_LLM_TTFT_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.llmTtftTimeoutMs",
+     "file": "engine-config.ts",
+     "kind": "num_inline",
+     "line": 46
+    }
+   ]
+  },
+  {
+   "key": "AIM_MANTLE_HOST",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": "https://bedrock-mantle.us-east-1.api.aws",
+     "file": "mantle-llm.ts",
+     "kind": "str",
+     "line": 47
+    }
+   ],
+   "exclude_reason": "addressing"
+  },
+  {
+   "key": "AIM_MANTLE_KEEPALIVE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MANTLE_KEEPALIVE_DEFAULT_MS",
+     "file": "mantle-llm.ts",
+     "kind": "num_or",
+     "line": 37
+    }
+   ]
+  },
+  {
+   "key": "AIM_MAX_PLAYBACK_LEAD_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.playbackClock.maxLeadMs",
+     "file": "playback-settlement.ts",
+     "kind": "num_bounded_env",
+     "line": 99
+    },
+    {
+     "clamp": [
+      0.0,
+      5000.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.playbackClock.maxLeadMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 393
+    }
+   ]
+  },
+  {
+   "key": "AIM_MIN_INPUT_CHARS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.meaningfulInput.minChars",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 382
+    }
+   ]
+  },
+  {
+   "key": "AIM_MODERATION_CONFIDENCE_THRESHOLD",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.moderationConfidenceThreshold",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 139
+    }
+   ]
+  },
+  {
+   "key": "AIM_MODERATION_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "BYPASS_LLM_TIMEOUT_DEFAULTS.moderationMs",
+     "file": "bypass-llm-config.ts",
+     "kind": "num",
+     "line": 87
+    }
+   ]
+  },
+  {
+   "key": "AIM_NO_FRAME_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.noFrameMs",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 163
+    }
+   ]
+  },
+  {
+   "key": "AIM_OPEN_CHAT_DIRECTIVE",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "prompt-compose.ts",
+     "kind": "bool_default_on",
+     "line": 41
+    }
+   ]
+  },
+  {
+   "key": "AIM_PLAYBACK_ACK_GRACE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ACK_TIMEOUT_DEFAULTS.graceMs",
+     "file": "playback-settlement.ts",
+     "kind": "num_bounded_env",
+     "line": 88
+    }
+   ]
+  },
+  {
+   "key": "AIM_PLAYBACK_ACK_INPUT_GRACE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ACK_TIMEOUT_DEFAULTS.inputGraceMs",
+     "file": "playback-settlement.ts",
+     "kind": "num_bounded_env",
+     "line": 92
+    }
+   ]
+  },
+  {
+   "key": "AIM_PLAYBACK_ACK_MAX_WAIT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ACK_TIMEOUT_DEFAULTS.maxWaitMs",
+     "file": "playback-settlement.ts",
+     "kind": "num_bounded_env",
+     "line": 90
+    }
+   ]
+  },
+  {
+   "key": "AIM_PLAYBACK_LEAD_MARGIN_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "clamp": [
+      0.0,
+      5000.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.playbackClock.leadMarginMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 395
+    }
+   ]
+  },
+  {
+   "key": "AIM_PROACTIVE_OPENING",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "turn-handling.ts",
+     "kind": "bool_default_on",
+     "line": 385
+    }
+   ]
+  },
+  {
+   "key": "AIM_PROACTIVE_OPENING_SILENCE_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.proactiveOpening.silenceMs",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 386
+    }
+   ]
+  },
+  {
+   "key": "AIM_QUESTION_FORCE_CLOSURE_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.questionProgression.forceClosureStreamTimeoutMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 405
+    },
+    {
+     "clamp": [
+      1000.0,
+      60000.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.questionProgression.forceClosureStreamTimeoutMs",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 410
+    }
+   ]
+  },
+  {
+   "key": "AIM_QUESTION_MAX_FOLLOW_UPS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "clamp": [
+      0.0,
+      5.0
+     ],
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.questionProgression.maxFollowUpsPerQuestion",
+     "file": "turn-handling.ts",
+     "kind": "num_bounded",
+     "line": 404
+    }
+   ]
+  },
+  {
+   "key": "AIM_QUESTION_MAX_RETRY",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.questionProgression.maxRetryPerQuestion",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 403
+    }
+   ]
+  },
+  {
+   "key": "AIM_QUESTION_MIN_ANSWER_CHARS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.questionProgression.minAnswerChars",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 402
+    }
+   ]
+  },
+  {
+   "key": "AIM_R3_SILENCE_ADVANCE",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "media-config.ts",
+     "kind": "bool_default_on",
+     "line": 187
+    }
+   ]
+  },
+  {
+   "key": "AIM_RECOVERY_TAKEOVER_DECAY",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.interruption.recoveryTakeoverDecay",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 371
+    }
+   ]
+  },
+  {
+   "key": "AIM_RMS_DIAG",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": false,
+     "file": "media-config.ts",
+     "kind": "bool_default_off",
+     "line": 112
+    }
+   ]
+  },
+  {
+   "key": "AIM_RMS_DIAG_EVERY",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.rmsDiagEvery",
+     "file": "media-config.ts",
+     "kind": "num_inline",
+     "line": 116
+    }
+   ]
+  },
+  {
+   "key": "AIM_RT_INSECURE",
+   "status": "excluded",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": false,
+     "file": "index.ts",
+     "kind": "bool_default_off",
+     "line": 70
+    }
+   ],
+   "exclude_reason": "dev-only"
+  },
+  {
+   "key": "AIM_SEMANTIC_END",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "media-config.ts",
+     "kind": "bool_default_on",
+     "line": 135
+    }
+   ]
+  },
+  {
+   "key": "AIM_SEVERE_VIOLATION_MAX",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.severeViolationMax",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 202
+    }
+   ]
+  },
+  {
+   "key": "AIM_SILENCE_VIOLATION_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.silenceViolationMs",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 153
+    }
+   ]
+  },
+  {
+   "key": "AIM_SILENCE_WARN_MAX",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "MEDIA_DEFAULTS.silenceWarnMax",
+     "file": "media-config.ts",
+     "kind": "guard",
+     "line": 158
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_EMA",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.ema",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 111
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_ENABLED",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "speaker-lock.ts",
+     "kind": "bool_default_on",
+     "line": 86
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_ENROLL_CONSISTENCY",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.enrollConsistency",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 109
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_ENROLL_GAP_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.enrollGapMs",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 108
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_ENROLL_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.enrollMs",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 107
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_MIN_VERIFY_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.minVerifyMs",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 112
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_THRESHOLD_HIGH",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.thresholdHigh",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 91
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_THRESHOLD_LOW",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.thresholdLow",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 92
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.timeoutMs",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 110
+    }
+   ]
+  },
+  {
+   "key": "AIM_SPEAKER_LOCK_VERIFY_WINDOW_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "SPEAKER_LOCK_DEFAULTS.verifyWindowMs",
+     "file": "speaker-lock.ts",
+     "kind": "num",
+     "line": 113
+    }
+   ]
+  },
+  {
+   "key": "AIM_STALE_ANSWER_MAX",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.staleAnswerMax",
+     "file": "engine-config.ts",
+     "kind": "num_inline",
+     "line": 61
+    }
+   ]
+  },
+  {
+   "key": "AIM_TRANSCRIPT_FIXER_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "BYPASS_LLM_TIMEOUT_DEFAULTS.fixerMs",
+     "file": "bypass-llm-config.ts",
+     "kind": "num",
+     "line": 78
+    }
+   ]
+  },
+  {
+   "key": "AIM_TTS_ANTIALIAS",
+   "status": "included",
+   "default_source": "literal",
+   "reads": [
+    {
+     "default": true,
+     "file": "resample.ts",
+     "kind": "bool_default_on",
+     "line": 32
+    }
+   ]
+  },
+  {
+   "key": "AIM_TTS_ANTIALIAS_FC_HZ",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ANTIALIAS_DEFAULTS.fcHz",
+     "file": "resample.ts",
+     "kind": "guard",
+     "line": 44
+    }
+   ]
+  },
+  {
+   "key": "AIM_TTS_ANTIALIAS_TAPS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ANTIALIAS_DEFAULTS.taps",
+     "file": "resample.ts",
+     "kind": "guard",
+     "line": 35
+    }
+   ]
+  },
+  {
+   "key": "AIM_TTS_TIMEOUT_MS",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "ENGINE_DEFAULTS.ttsTimeoutMs",
+     "file": "engine-config.ts",
+     "kind": "num_inline",
+     "line": 43
+    }
+   ]
+  },
+  {
+   "key": "AIM_VAD_ENERGY_THRESHOLD",
+   "status": "included",
+   "default_source": "import",
+   "reads": [
+    {
+     "default": null,
+     "default_expr": "TURN_HANDLING_DEFAULTS.endpointing.rmsThreshold",
+     "file": "turn-handling.ts",
+     "kind": "num",
+     "line": 440
+    }
+   ]
+  }
+ ]
+}

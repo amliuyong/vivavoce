@@ -1,0 +1,40 @@
+version: 0.2
+# CodeBuild 在 amd64 原生环境构建 GPU 镜像(AWS DLC PyTorch GPU base + FunASR + 真 OmniVoice),推 ECR。
+# 使用原生 amd64 构建，避免 qemu 跨架构构建 GPU 镜像的不稳定性。
+# base 用 AWS Deep Learning Container(763104351884 ECR)而非 Docker Hub nvidia/cuda —— 后者 CodeBuild
+# 共享出口常 429 限流;DLC 在 AWS ECR 无限流,且已含 CUDA+torch(省最大的安装层)。
+# 模型权重:build 前从同区 S3(AIM_MODEL_BUCKET)sync 到 gpu/_models/,再 COPY 进镜像
+# 权重由操作者在当前部署账号中单独准备；本仓库和构建配置不提供权重来源。
+phases:
+  pre_build:
+    commands:
+      - echo "Login to app ECR + AWS DLC ECR..."
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+      # AWS DLC 基础镜像账号(GPU PyTorch base):aws 分区 = 763104351884;aws-cn 分区 = 727897471807。
+      # DLC_ACCOUNT / DLC_TAG 由 build-gpu-image.sh 经 CodeBuild env 注入(按分区);缺省回退 aws 分区值。
+      - DLC_ACCOUNT="${DLC_ACCOUNT:-763104351884}"
+      - 'DLC_ECR="${DLC_ACCOUNT}.dkr.ecr.${AWS_DEFAULT_REGION}.$([ "${AWS_PARTITION:-aws}" = "aws-cn" ] && echo amazonaws.com.cn || echo amazonaws.com)"'
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$DLC_ECR"
+      - aws ecr describe-repositories --repository-names "$ECR_REPO" --region "$AWS_DEFAULT_REGION" >/dev/null 2>&1 || aws ecr create-repository --repository-name "$ECR_REPO" --region "$AWS_DEFAULT_REGION" >/dev/null
+  build:
+    commands:
+      - echo "Build GPU image (amd64, target=gpu, base=AWS DLC PyTorch GPU)..."
+      - cd "$CODEBUILD_SRC_DIR/gpu" || (echo "gpu/ not found" && exit 1)
+      # ★ 先在 host(有 CodeBuild role 凭证)从 S3 拉权重到 _models/,docker build 再 COPY(容器内无凭证)
+      - echo "Sync model weights from s3://$AIM_MODEL_BUCKET ..."
+      - mkdir -p _models
+      - aws s3 sync "s3://$AIM_MODEL_BUCKET/funasr/" "_models/funasr/" --region "$AWS_DEFAULT_REGION" --only-show-errors
+      - aws s3 sync "s3://$AIM_MODEL_BUCKET/omnivoice/hf-snapshot/" "_models/omnivoice/hf-snapshot/" --region "$AWS_DEFAULT_REGION" --only-show-errors
+      - python -m gpu_service.model_manifest --root _models --output _models/funasr-models.sha256
+      - du -sh _models/* || true
+      # DLC base 按分区/区域拼(login host 与之一致;DLC_TAG 缺省 aws 分区 v1.70,cn 分区经 env 传 v1.74)。
+      - DLC_TAG="${DLC_TAG:-2.6.0-gpu-py312-cu124-ubuntu22.04-ec2-v1.70}"
+      - DLC_BASE="${DLC_ECR}/pytorch-inference:${DLC_TAG}"
+      - echo "DLC base = $DLC_BASE"
+      # PIP_INDEX_URL(区域构建加速,默认空=官方源):中国区经 env 传清华源,避免 gpu stage
+      # `pip install .[models]`(funasr/modelscope + OmniVoice 依赖)跨境拉 pypi.org 超时。
+      - docker build --target gpu --platform linux/amd64 --build-arg DLC_BASE="$DLC_BASE" ${PIP_INDEX_URL:+--build-arg PIP_INDEX_URL="$PIP_INDEX_URL"} -t "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" .
+  post_build:
+    commands:
+      - docker push "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
+      - echo "Pushed $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"

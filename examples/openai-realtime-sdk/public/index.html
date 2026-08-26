@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Viva Realtime</title>
+    <style>
+      :root {
+        color: #18201d;
+        background: #f5f7f6;
+        font: 16px/1.5 system-ui, sans-serif;
+      }
+      body {
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        place-items: center;
+      }
+      main {
+        width: min(32rem, calc(100% - 2rem));
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        letter-spacing: 0;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      button {
+        min-height: 2.75rem;
+        border: 1px solid #6d7772;
+        border-radius: 6px;
+        padding: 0 1rem;
+        color: inherit;
+        background: white;
+        font: inherit;
+      }
+      button:disabled {
+        opacity: 0.45;
+      }
+      .language {
+        display: flex;
+        flex: 0 0 auto;
+        overflow: hidden;
+        border: 1px solid #6d7772;
+        border-radius: 6px;
+      }
+      .language button {
+        min-height: 2.25rem;
+        border: 0;
+        border-radius: 0;
+        padding: 0 0.75rem;
+      }
+      .language button + button {
+        border-left: 1px solid #6d7772;
+      }
+      .language button[aria-pressed="true"] {
+        color: white;
+        background: #37413d;
+      }
+      #start {
+        border-color: #176b48;
+        color: white;
+        background: #176b48;
+      }
+      #status {
+        min-height: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Viva Realtime</h1>
+        <div class="language" role="group" aria-label="语言">
+          <button type="button" data-language="zh" aria-pressed="true">中文</button>
+          <button type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
+      </header>
+      <div class="actions">
+        <button id="start" type="button">开始</button>
+        <button id="end" type="button" disabled>结束会话</button>
+        <button id="disconnect" type="button" disabled>断开连接</button>
+      </div>
+      <p id="status" role="status">未连接</p>
+    </main>
+    <script src="/sdk.js"></script>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

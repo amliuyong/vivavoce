@@ -1,0 +1,51 @@
+# The backend image uses the repository root as its Docker build context.
+# Keep only backend runtime files and frontend build inputs in that context.
+
+# Repository metadata, local configuration, and credentials
+.git
+.githooks
+.vscode
+.claude
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Other subsystems and documentation
+bridge
+contracts
+examples
+gpu
+infrastructure
+uat
+docs
+specs
+scripts
+tools
+README.md
+LICENSE
+NOTICE
+
+# Dependencies and generated output
+**/node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/*.egg-info
+**/coverage
+**/test-results
+**/playwright-report
+
+# Backend non-runtime files
+backend/tests
+backend/scripts
+backend/Dockerfile.lambda
+backend/pyproject.toml
+
+# Frontend generated and test files
+frontend/out
+frontend/.next
+frontend/test
+frontend/tsconfig.tsbuildinfo

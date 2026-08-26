@@ -1,0 +1,29 @@
+{
+  "name": "vivavoce-frontend",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "description": "VivaVoce bilingual frontend SPA with Cognito authentication",
+  "scripts": {
+    "sync-openapi": "node -e \"require('fs').copyFileSync('../backend/openapi.json','public/openapi.json')\"",
+    "predev": "npm run sync-openapi",
+    "prebuild": "npm run sync-openapi",
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "6.3.20",
+    "next": "16.3.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.7.3"
+  }
+}

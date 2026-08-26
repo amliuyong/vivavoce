@@ -1,0 +1,50 @@
+title = "VivaVoce secret scanning"
+
+[extend]
+useDefault = true
+
+# These files intentionally exercise redaction and signing with invalid,
+# synthetic values. Both the path and the line shape must match, and the
+# exception applies only to Gitleaks' generic API-key rule.
+[[allowlists]]
+description = "Synthetic credential and signing fixtures"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)backend/tests/test_evaluator_unit\.py$''',
+  '''(^|/)backend/tests/test_dispatch_token_redaction\.py$''',
+  '''(^|/)backend/tests/conftest\.py$''',
+  '''(^|/)backend/tests/test_llm_config_e2e\.py$''',
+  '''(^|/)backend/tests/test_minimax_config_e2e\.py$''',
+  '''(^|/)contracts/realtime-client-secret-v1\.json$''',
+  '''(^|/)bridge/test/realtime-upgrade-gateway\.test\.ts$''',
+]
+regexes = [
+  '''(?i)(bedrock_api_key|llm_bearer_token|llm_bedrock_api_key|delegation_token_secret|api_key|signing_key)''',
+]
+
+# RFC 6455 requires a base64-encoded nonce in this test header. It is not an
+# application credential.
+[[allowlists]]
+description = "RFC WebSocket handshake nonce"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)bridge/test/realtime-upgrade-gateway\.test\.ts$''',
+  '''(^|/)bridge/test/realtime-index-upgrade\.test\.ts$''',
+]
+regexes = ['''Sec-WebSocket-Key''']
+
+# This is a runtime setting name, not a secret value.
+[[allowlists]]
+description = "Configuration inventory environment-variable name"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)bridge/test/config-characterization\.test\.ts$''',
+  '''(^|/)bridge/config-inventory\.json$''',
+]
+regexes = ['''AIM_R3_SILENCE_ADVANCE''']

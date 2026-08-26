@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/env.sh
+source "$SCRIPT_DIR/lib/env.sh"
+
+die() {
+  printf 'ERROR: %s\n' "$*" >&2
+  exit 1
+}
+
+usage() {
+  cat <<'EOF'
+VivaVoce development and deployment helper
+
+Usage:
+  ./scripts/viva doctor
+  ./scripts/viva env
+  ./scripts/viva bootstrap
+  ./scripts/viva test
+  ./scripts/viva models
+  ./scripts/viva voices
+  ./scripts/viva gpu-image [-t <tag>]
+  ./scripts/viva synth
+  ./scripts/viva deploy
+
+Configuration:
+  .env         common settings and optional provider credentials
+  .env.region  AWS account, region, domain, identity, and GPU settings
+
+Only the .example templates belong in Git. Local files must be chmod 600.
+EOF
+}
+
+check_node_version() {
+  command -v node >/dev/null 2>&1 || return 1
+  node -e '
+    const [major, minor] = process.versions.node.split(".").map(Number);
+    const ok =
+      (major === 20 && minor >= 19) ||
+      (major === 22 && minor >= 13) ||
+      major >= 24;
+    process.exit(ok ? 0 : 1);
+  '
+}
+
+doctor() {
+  local failed=0
+  viva_load_env optional || failed=1
+
+  printf 'Toolchain\n'
+  if check_node_version; then
+    printf '  node                               %s\n' "$(node --version)"
+  else
+    printf '  node                               missing or unsupported\n'
+    failed=1
+  fi
+  if command -v npm >/dev/null 2>&1; then
+    printf '  npm                                %s\n' "$(npm --version)"
+  else
+    printf '  npm                                missing\n'
+    failed=1
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    printf '  python3                            %s\n' "$(python3 --version 2>&1)"
+  else
+    printf '  python3                            missing\n'
+    failed=1
+  fi
+  if command -v aws >/dev/null 2>&1; then
+    printf '  aws                                installed\n'
+  else
+    printf '  aws                                not installed (required for deploy)\n'
+  fi
+  if command -v docker >/dev/null 2>&1; then
+    printf '  docker                             installed\n'
+  else
+    printf '  docker                             not installed (required for image builds)\n'
+  fi
+
+  printf '\nLocal files\n'
+  for file in .env .env.region; do
+    if [[ -f "$VIVA_ROOT/$file" ]]; then
+      if viva_check_env_permissions "$VIVA_ROOT/$file"; then
+        printf '  %-35s present, private permissions\n' "$file"
+      else
+        failed=1
+      fi
+    else
+      printf '  %-35s missing\n' "$file"
+    fi
+  done
+
+  local ignored_path
+  for ignored_path in .env .env.region; do
+    git -C "$VIVA_ROOT" check-ignore -q "$ignored_path" \
+      || { printf '  gitignore %-25s FAILED\n' "$ignored_path"; failed=1; }
+  done
+
+  printf '\nConfiguration (values redacted)\n'
+  viva_report_env \
+    AWS_PROFILE AWS_REGION VIVA_EXPECT_ACCOUNT VIVA_ADMIN_EMAIL \
+    VIVA_CUSTOM_DOMAIN VIVA_ROUTE53_ZONE_ID VIVA_ROUTE53_ZONE_NAME \
+    VIVA_GPU_INSTANCE_TYPE VIVA_GPU_IMAGE_TAG \
+    VIVA_BEDROCK_API_KEY VIVA_MINIMAX_API_KEY
+
+  (( failed == 0 )) || die "doctor found blocking problems"
+}
+
+bootstrap_python() {
+  local component="$1"
+  (
+    cd "$VIVA_ROOT/$component"
+    python3 -m venv .venv
+    # shellcheck disable=SC1091
+    source .venv/bin/activate
+    python -m pip install --upgrade pip
+    python -m pip install -e ".[test]"
+  )
+}
+
+bootstrap_node() {
+  local component="$1"
+  [[ -f "$VIVA_ROOT/$component/package-lock.json" ]] || return 0
+  (cd "$VIVA_ROOT/$component" && npm ci --no-audit --no-fund)
+}
+
+bootstrap() {
+  viva_load_env optional
+  command -v python3 >/dev/null 2>&1 || die "python3 is required"
+  check_node_version || die "Node 20.19+, 22.13+, or 24+ is required"
+  command -v npm >/dev/null 2>&1 || die "npm is required"
+
+  bootstrap_python backend
+  bootstrap_python gpu
+
+  local component
+  for component in bridge frontend infrastructure uat examples/openai-realtime-sdk; do
+    bootstrap_node "$component"
+  done
+}
+
+deployment_args() {
+  DEPLOYMENT_ARGS=(
+    -r "${AWS_REGION:-us-east-1}"
+    -s "${VIVA_STACK_NAME:-Voce}"
+    --engine "${VIVA_ENGINE_TYPE:-three_stage}"
+  )
+  [[ -n "${AWS_PROFILE:-}" ]] && DEPLOYMENT_ARGS+=(-p "$AWS_PROFILE")
+  [[ -n "${VIVA_ADMIN_EMAIL:-}" ]] && DEPLOYMENT_ARGS+=(-e "$VIVA_ADMIN_EMAIL")
+}
+
+synth() {
+  viva_load_env optional
+  deployment_args
+  "$SCRIPT_DIR/deploy-aws.sh" "${DEPLOYMENT_ARGS[@]}" --synth-only
+}
+
+deploy() {
+  viva_load_env required
+  viva_require_env AWS_REGION
+  viva_require_env VIVA_ADMIN_EMAIL
+  viva_require_env VIVA_CUSTOM_DOMAIN
+  viva_require_env VIVA_ROUTE53_ZONE_ID
+  viva_require_env VIVA_ROUTE53_ZONE_NAME
+
+  deployment_args
+  [[ "${VIVA_AUTO_APPROVE:-0}" == "1" ]] && DEPLOYMENT_ARGS+=(--yes)
+  [[ "${VIVA_SKIP_TESTS:-0}" == "1" ]] && DEPLOYMENT_ARGS+=(--skip-tests)
+  "$SCRIPT_DIR/deploy-aws.sh" "${DEPLOYMENT_ARGS[@]}"
+}
+
+command="${1:-help}"
+[[ $# -eq 0 ]] || shift
+case "$command" in
+  help|-h|--help)
+    usage
+    ;;
+  doctor)
+    doctor
+    ;;
+  env)
+    viva_load_env optional
+    viva_report_env \
+      AWS_PROFILE AWS_REGION VIVA_EXPECT_ACCOUNT VIVA_ADMIN_EMAIL \
+      VIVA_CUSTOM_DOMAIN VIVA_ROUTE53_ZONE_ID VIVA_ROUTE53_ZONE_NAME \
+      VIVA_AUTH_REGION VIVA_AUTH_USER_POOL_ID VIVA_AUTH_USER_POOL_CLIENT_ID \
+      VIVA_AUTH_MCP_CLIENT_ID VIVA_AUTH_HOSTED_UI_DOMAIN \
+      VIVA_GPU_INSTANCE_TYPE VIVA_GPU_IMAGE_TAG VIVA_GPU_SESSIONS_PER_INSTANCE \
+      VIVA_BEDROCK_API_KEY VIVA_MINIMAX_API_KEY \
+      VIVA_MODEL_WEIGHTS_URL VIVA_MODEL_WEIGHTS_DIR
+    ;;
+  bootstrap)
+    bootstrap
+    ;;
+  test)
+    viva_load_env optional
+    "$SCRIPT_DIR/deploy-aws.sh" --test
+    ;;
+  models)
+    "$SCRIPT_DIR/prepare-model-weights.sh" "$@"
+    ;;
+  voices)
+    viva_load_env required
+    command -v python3 >/dev/null 2>&1 || die "python3 is required"
+    python3 "$VIVA_ROOT/gpu/scripts/gen_reference_voice.py" "$@"
+    ;;
+  gpu-image)
+    "$SCRIPT_DIR/build-gpu-image.sh" "$@"
+    ;;
+  synth)
+    synth
+    ;;
+  deploy)
+    deploy
+    ;;
+  *)
+    usage >&2
+    die "unknown command: $command"
+    ;;
+esac

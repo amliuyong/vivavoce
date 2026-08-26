@@ -1,0 +1,57 @@
+{
+  "repository": "https://github.com/k2-fsa/OmniVoice",
+  "commit": "33a8ca325d9c95df20512b36864b9041c7532b35",
+  "license": {
+    "spdx": "Apache-2.0",
+    "path": "../LICENSE",
+    "sha256": "c843a20ede4d1e7595c2736b88fc62cb7483a8c082eb7092a3772248849c59e2"
+  },
+  "files": {
+    "__init__.py": {
+      "origin": "upstream",
+      "sha256": "b5fd01ec4ebac450a779edbdd4767e0a405f809e9875ed0137062bd671620d81",
+      "upstream_sha256": "b5fd01ec4ebac450a779edbdd4767e0a405f809e9875ed0137062bd671620d81"
+    },
+    "models/__init__.py": {
+      "origin": "upstream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "models/omnivoice.py": {
+      "origin": "modified",
+      "sha256": "fdd0de9b1615118b88a301f19c1ec2521859c84a060f09c058249c87fc65dcb1",
+      "upstream_sha256": "bf1e1b577d3c84dc57bad0d81b7fab2d8c3f328008afff79de544392baf92b89",
+      "modification_id": "silence-empty-output-guard-v1"
+    },
+    "utils/__init__.py": {
+      "origin": "upstream",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "utils/audio.py": {
+      "origin": "upstream",
+      "sha256": "6e2154cb8936138ee6c417c253dc9b222500ed322e6fbb2c0377a0b6850b8b48",
+      "upstream_sha256": "6e2154cb8936138ee6c417c253dc9b222500ed322e6fbb2c0377a0b6850b8b48"
+    },
+    "utils/duration.py": {
+      "origin": "upstream",
+      "sha256": "f9bddd84f668c486857903e8baced167ced0660c393be5fa1431c55bfc8dbfba",
+      "upstream_sha256": "f9bddd84f668c486857903e8baced167ced0660c393be5fa1431c55bfc8dbfba"
+    },
+    "utils/lang_map.py": {
+      "origin": "upstream",
+      "sha256": "e7924def0990d215aa94356f2ab17512a7b77e9cd43bc9bded093f757dfc1cd9",
+      "upstream_sha256": "e7924def0990d215aa94356f2ab17512a7b77e9cd43bc9bded093f757dfc1cd9"
+    },
+    "utils/text.py": {
+      "origin": "upstream",
+      "sha256": "b0343dbdd9b74ddefa964776489ef8eb331df1dc3c2f715e667f51d423290ca0",
+      "upstream_sha256": "b0343dbdd9b74ddefa964776489ef8eb331df1dc3c2f715e667f51d423290ca0"
+    },
+    "utils/voice_design.py": {
+      "origin": "upstream",
+      "sha256": "4b8f50d9bfe2232a540b6f4f94a5652797d2937636a9d1d649c165e6d4adb343",
+      "upstream_sha256": "4b8f50d9bfe2232a540b6f4f94a5652797d2937636a9d1d649c165e6d4adb343"
+    }
+  }
+}
