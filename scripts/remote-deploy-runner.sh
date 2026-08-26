@@ -116,6 +116,10 @@ export VIVA_PLAN_REQUIRE_EXISTING_STACK=1
 (( ALLOW_DESTRUCTIVE == 1 )) && export VIVA_PLAN_ALLOW_DESTRUCTIVE=1
 (( ALLOW_SECURITY_CHANGES == 1 )) \
   && export VIVA_PLAN_ALLOW_SECURITY_CHANGES=1
+# CDK asset staging must preserve executable directory bits for non-root
+# containers. Private orchestration files are protected by their parent
+# directory and explicit chmod calls.
+umask 022
 ./scripts/viva plan
 
 if (( DO_DEPLOY == 0 )); then
@@ -128,6 +132,8 @@ write_stage "deploying"
 export VIVA_AUTO_APPROVE=1
 ./scripts/viva deploy
 
+# Post-deployment evidence can include environment-specific diagnostics.
+umask 077
 write_stage "waiting-for-services"
 for cluster in "${stack}-cluster" "${stack}-gpu"; do
   services="$(aws ecs list-services \
