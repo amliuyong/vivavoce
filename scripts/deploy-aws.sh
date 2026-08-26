@@ -109,6 +109,7 @@ run_all_tests() {
       || failed=1
   fi
   python3 "$ROOT_DIR/scripts/test-deployment-plan.py" || failed=1
+  python3 "$ROOT_DIR/scripts/test-deployment-workflow.py" || failed=1
 
   # ── Lint gate ────────────────────────────────────────────────────────────────
   #

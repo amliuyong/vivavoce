@@ -57,6 +57,10 @@ COPY backend/app ./app
 # 产物里的占位 config.json 被显式路由遮蔽,不生效)。
 COPY --from=frontend-build /repo/frontend/out ./static
 
+# CDK stages Docker assets using the caller's umask. Normalize runtime content
+# so the non-root app user can traverse packages even if staging was private.
+RUN chmod -R a+rX /app/app /app/static
+
 EXPOSE 8000
 
 # 非 root 运行(ECS2 安全硬化)
