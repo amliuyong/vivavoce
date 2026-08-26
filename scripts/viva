@@ -23,7 +23,9 @@ Usage:
   ./scripts/viva voices
   ./scripts/viva gpu-image [-t <tag>]
   ./scripts/viva synth
+  ./scripts/viva plan
   ./scripts/viva deploy
+  ./scripts/viva remote-deploy [--yes]
 
 Configuration:
   .env         common settings and optional provider credentials
@@ -112,7 +114,7 @@ bootstrap_python() {
   local component="$1"
   (
     cd "$VIVA_ROOT/$component"
-    python3 -m venv .venv
+    python3 -m venv --clear .venv
     # shellcheck disable=SC1091
     source .venv/bin/activate
     python -m pip install --upgrade pip
@@ -157,6 +159,18 @@ synth() {
   "$SCRIPT_DIR/deploy-aws.sh" "${DEPLOYMENT_ARGS[@]}" --synth-only
 }
 
+plan() {
+  viva_load_env required
+  viva_require_env AWS_REGION
+  viva_require_env VIVA_ADMIN_EMAIL
+  viva_require_env VIVA_CUSTOM_DOMAIN
+  viva_require_env VIVA_ROUTE53_ZONE_ID
+  viva_require_env VIVA_ROUTE53_ZONE_NAME
+
+  deployment_args
+  "$SCRIPT_DIR/deploy-aws.sh" "${DEPLOYMENT_ARGS[@]}" --plan-only
+}
+
 deploy() {
   viva_load_env required
   viva_require_env AWS_REGION
@@ -188,8 +202,12 @@ case "$command" in
       VIVA_AUTH_REGION VIVA_AUTH_USER_POOL_ID VIVA_AUTH_USER_POOL_CLIENT_ID \
       VIVA_AUTH_MCP_CLIENT_ID VIVA_AUTH_HOSTED_UI_DOMAIN \
       VIVA_GPU_INSTANCE_TYPE VIVA_GPU_IMAGE_TAG VIVA_GPU_SESSIONS_PER_INSTANCE \
+      VIVA_CURSOR_VOICED_GATE VIVA_BARGE_OPEN_COOLDOWN_MS \
+      VIVA_BARGE_OPEN_COOLDOWN_MULT \
       VIVA_BEDROCK_API_KEY VIVA_MINIMAX_API_KEY \
-      VIVA_MODEL_WEIGHTS_URL VIVA_MODEL_WEIGHTS_DIR
+      VIVA_MODEL_WEIGHTS_URL VIVA_MODEL_WEIGHTS_DIR \
+      VIVA_REMOTE_HOST VIVA_REMOTE_BASE_DIR VIVA_REMOTE_ACTIVE_LINK \
+      VIVA_REMOTE_CONFIG_DIR VIVA_REMOTE_E2E_WAV
     ;;
   bootstrap)
     bootstrap
@@ -212,8 +230,14 @@ case "$command" in
   synth)
     synth
     ;;
+  plan)
+    plan
+    ;;
   deploy)
     deploy
+    ;;
+  remote-deploy)
+    "$SCRIPT_DIR/deploy-remote.sh" "$@"
     ;;
   *)
     usage >&2

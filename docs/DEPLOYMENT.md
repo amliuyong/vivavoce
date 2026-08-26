@@ -130,6 +130,57 @@ By default, deployment runs its test gate and requires interactive approval for
 security-sensitive changes. Set `VIVA_AUTO_APPROVE=1` or
 `VIVA_SKIP_TESTS=1` only for a deliberately controlled automation context.
 
+## Exact-commit remote deployment
+
+For environments where images must be built inside the target region, keep the
+remote host and paths in the ignored `.env.region` file:
+
+```dotenv
+VIVA_REMOTE_HOST=regional-builder
+VIVA_REMOTE_BASE_DIR=/srv/vivavoce/releases
+VIVA_REMOTE_ACTIVE_LINK=/srv/vivavoce/current
+VIVA_REMOTE_CONFIG_DIR=/srv/vivavoce/current
+VIVA_REMOTE_E2E_WAV=/srv/vivavoce/test-audio.wav
+VIVA_REMOTE_REQUIRE_CI=1
+```
+
+The remote configuration directory must already contain private, mode-`600`
+`.env` and `.env.region` files. Each release copies those files into a new
+exact-commit directory; configuration is never added to the Git archive.
+Remote updates require the stack to exist already and require a pinned
+`VIVA_GPU_IMAGE_TAG`, so a plan cannot silently become a new stack or select a
+different image between planning and deployment.
+
+Generate a real account-bound CloudFormation plan without deploying:
+
+```bash
+./scripts/viva remote-deploy
+```
+
+After reviewing the plan, execute it explicitly:
+
+```bash
+./scripts/viva remote-deploy --yes
+```
+
+The command:
+
+1. requires a clean worktree and, by default, successful CI for `origin/main`;
+2. transfers a checksum-verified `git archive` to a new remote release;
+3. checks the AWS account, GPU availability, and in-progress sessions;
+4. blocks resource deletion, non-ECS replacement, IAM changes, and security
+   group changes unless separately authorized;
+5. runs the normal test and deployment gates on the remote host;
+6. waits for CloudFormation, ECS, target health, and old-target draining;
+7. verifies `/health`, the deployed playback worklet, runtime flags, and an
+   optional real audio session;
+8. writes `.deployment-evidence.json`, then atomically updates the active
+   symlink only after all checks pass.
+
+Use `--allow-security-changes` or `--allow-destructive` only after reviewing the
+generated plan. Use `--skip-e2e` only when a controlled environment cannot
+provide a non-sensitive test WAV and scoped server-side E2E key.
+
 ## Post-deployment checks
 
 At minimum:

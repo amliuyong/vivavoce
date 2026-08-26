@@ -7,6 +7,11 @@ my_*.sh
 .env.*
 !.env.example
 !.env.region.example
+.deployment-plan/
+.deployment-evidence.json
+.remote-*
+.source-commit
+.ci-run-id
 *.pem
 *.key
 *.p12
