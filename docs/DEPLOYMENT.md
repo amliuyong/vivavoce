@@ -109,9 +109,8 @@ Run an offline CDK synthesis before deployment:
 ./scripts/viva synth
 ```
 
-review
-placeholder domain values when the local regional file is absent; deployment
-does not.
+Synthesis may use placeholder domain values when the local regional file is
+absent; deployment does not.
 
 ## Deploy
 
@@ -149,8 +148,8 @@ Store environment-specific evidence outside Git.
 ## Rollback
 
 Prefer a forward deployment that pins the last known-good application and GPU
-image versions. review
-rollback. Back up retained data first.
+image versions. Review the CloudFormation change set before any rollback, and
+back up retained data first.
 
 Resource destruction is intentionally not exposed through `scripts/viva`.
 Destroying a stack and deleting retained S3, ECR, or model data are separate,

@@ -8,8 +8,9 @@ const { test } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
-// node 22.23 原生 TS type-stripping:score.ts 无运行时 import(纯类型 + 函数),可直接 require。
-// 这才是「测生产实现」——变异 score.ts 的累加逻辑,本测试即红(不再是复刻副本假绿)。
+// 测试命令通过项目锁定的 tsx loader 加载 TypeScript,不依赖特定 Node 小版本的
+// 原生 type-stripping。这才是「测生产实现」——变异 score.ts 的累加逻辑,
+// 本测试即红(不再是复刻副本假绿)。
 const { scoreBand, scoreTotals } = require('../src/lib/score.ts');
 
 test('满分 10:9 分绿、7 分黄、4 分红', () => {
