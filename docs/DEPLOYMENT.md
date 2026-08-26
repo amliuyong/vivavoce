@@ -177,6 +177,10 @@ The command:
 8. writes `.deployment-evidence.json`, then atomically updates the active
    symlink only after all checks pass.
 
+CDK plan artifacts are written to a private sibling directory outside the
+release source tree. This prevents Docker asset contexts from recursively
+copying the plan into themselves.
+
 Use `--allow-security-changes` or `--allow-destructive` only after reviewing the
 generated plan. Use `--skip-e2e` only when a controlled environment cannot
 provide a non-sensitive test WAV and scoped server-side E2E key.
