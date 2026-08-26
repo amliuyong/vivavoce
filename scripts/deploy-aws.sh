@@ -10,7 +10,7 @@
 #
 # 用法:
 #   ./scripts/deploy-aws.sh -e admin@example.com [-r us-east-1] [-p my-aws-profile]
-#                [-s Voce] [--test|--synth-only] [--yes]
+#                [-s Voce] [--test|--synth-only|--plan-only] [--yes]
 #
 set -euo pipefail
 
@@ -45,6 +45,7 @@ VivaVoce AWS 部署
 
 用法:
   ./scripts/viva deploy
+  ./scripts/viva plan
   ./scripts/viva synth
 
 底层调试:
@@ -57,6 +58,7 @@ VivaVoce AWS 部署
   -s <stack_name>      CloudFormation 栈名(默认 Voce)
   --engine <type>      默认语音引擎(仅 three_stage;s2s 已删除)
   --synth-only         只 synth 校验,不部署(离线可用;未设域名三件套时自动用占位值)
+  --plan-only          对线上栈生成账号绑定的 change-set diff,执行安全检查后退出
   --test               跑全部测试(backend/gpu UT+e2e、bridge UT、CDK UT)后退出
   --skip-tests         部署前不跑测试(默认部署前会先跑 CDK UT)
   --yes                显式批准:非交互环境(CI/后台)下放行安全/IAM 放宽变更部署
@@ -66,6 +68,7 @@ EOF
 
 # ── 解析参数 ──
 SYNTH_ONLY="false"
+PLAN_ONLY="false"
 TEST_ONLY="false"
 SKIP_TESTS="false"
 while [[ $# -gt 0 ]]; do
@@ -76,6 +79,7 @@ while [[ $# -gt 0 ]]; do
     -s) STACK_NAME="$2"; shift 2 ;;
     --engine) ENGINE_TYPE="$2"; shift 2 ;;
     --synth-only) SYNTH_ONLY="true"; shift ;;
+    --plan-only) PLAN_ONLY="true"; shift ;;
     --test) TEST_ONLY="true"; shift ;;
     --skip-tests) SKIP_TESTS="true"; shift ;;
     --yes) ALLOW_NO_APPROVAL="true"; shift ;;
@@ -89,6 +93,22 @@ done
 # ── 测试 runner(backend/gpu Python + bridge/CDK Node)──
 run_all_tests() {
   local failed=0
+
+  step "部署脚本静态检查"
+  bash -n "$ROOT_DIR/scripts/viva" "$ROOT_DIR"/scripts/*.sh "$ROOT_DIR"/scripts/lib/*.sh \
+    || failed=1
+  if command -v shellcheck >/dev/null 2>&1; then
+    # New deployment entry points are a required gate. Keep legacy scripts out
+    # of this gate until their pre-existing warnings are remediated separately.
+    shellcheck -e SC1091,SC2006 \
+      "$ROOT_DIR/scripts/viva" \
+      "$ROOT_DIR/scripts/deploy-aws.sh" \
+      "$ROOT_DIR/scripts/deploy-remote.sh" \
+      "$ROOT_DIR/scripts/remote-deploy-runner.sh" \
+      "$ROOT_DIR/scripts/lib/env.sh" \
+      || failed=1
+  fi
+  python3 "$ROOT_DIR/scripts/test-deployment-plan.py" || failed=1
 
   # ── Lint gate ────────────────────────────────────────────────────────────────
   #
@@ -125,9 +145,9 @@ run_all_tests() {
   step "测试 backend(FastAPI UT + API e2e,带 Cognito JWT 认证)"
   if command -v python3 >/dev/null 2>&1; then
     ( cd "$ROOT_DIR/backend" \
-      && python3 -m venv .venv \
+      && python3 -m venv --clear .venv \
       && . .venv/bin/activate \
-      && pip install -q -e ".[test]" \
+      && python -m pip install -q -e ".[test]" \
       && python -m pytest -q ) || failed=1
   else
     c_ylw "  跳过:未找到 python3"; failed=1
@@ -136,9 +156,9 @@ run_all_tests() {
   step "测试 gpu(ASR/TTS WS 协议 + VAD + 服务 e2e)"
   if command -v python3 >/dev/null 2>&1; then
     ( cd "$ROOT_DIR/gpu" \
-      && python3 -m venv .venv \
+      && python3 -m venv --clear .venv \
       && . .venv/bin/activate \
-      && pip install -q -e ".[test]" \
+      && python -m pip install -q -e ".[test]" \
       && python -m pytest -q ) || failed=1
   else
     c_ylw "  跳过:未找到 python3"; failed=1
@@ -373,11 +393,67 @@ else
   printf '\033[33m      3) 重新部署本脚本。\033[0m\n'
 fi
 
-# ── 6. synth / bootstrap / deploy ──
+# ── 6. synth / plan / bootstrap / deploy ──
 if [[ "$SYNTH_ONLY" == "true" ]]; then
   step "6/6 synth 校验(不部署)"
   "$CDK_BIN" synth "$STACK_NAME" "${CTX[@]}" --quiet
   c_grn "✓ synth 通过(骨架)。去掉 --synth-only 即可部署。"
+  exit 0
+fi
+
+if [[ "$PLAN_ONLY" == "true" ]]; then
+  step "6/6 生成账号绑定的部署 plan"
+  PLAN_DIR="${VIVA_PLAN_DIR:-$ROOT_DIR/.deployment-plan}"
+  [[ "$PLAN_DIR" == /* ]] || die "VIVA_PLAN_DIR 必须是绝对路径"
+  mkdir -p "$PLAN_DIR"
+  chmod 700 "$PLAN_DIR"
+  find "$PLAN_DIR" -mindepth 1 -depth -delete
+  mkdir -m 700 "$PLAN_DIR/cdk.out"
+
+  "$CDK_BIN" synth "$STACK_NAME" "${CTX[@]}" \
+    --output "$PLAN_DIR/cdk.out" \
+    --quiet \
+    >"$PLAN_DIR/synth.log" 2>&1
+
+  if aws cloudformation describe-stacks \
+      --region "$AWS_REGION" \
+      --stack-name "$STACK_NAME" >/dev/null 2>&1; then
+    aws cloudformation get-template \
+      --region "$AWS_REGION" \
+      --stack-name "$STACK_NAME" \
+      --template-stage Processed \
+      --query TemplateBody \
+      --output json \
+      >"$PLAN_DIR/current-template.json"
+  else
+    [[ "${VIVA_PLAN_REQUIRE_EXISTING_STACK:-0}" != "1" ]] \
+      || die "线上栈 $STACK_NAME 不存在,拒绝把远程更新误变成新建"
+    printf '{"Resources":{}}\n' >"$PLAN_DIR/current-template.json"
+  fi
+
+  "$CDK_BIN" diff \
+    --app "$PLAN_DIR/cdk.out" \
+    "$STACK_NAME" \
+    --change-set \
+    --no-color \
+    >"$PLAN_DIR/cdk-diff.log" 2>&1
+
+  plan_args=(
+    --current "$PLAN_DIR/current-template.json"
+    --proposed "$PLAN_DIR/cdk.out/${STACK_NAME}.template.json"
+    --cdk-diff "$PLAN_DIR/cdk-diff.log"
+    --summary "$PLAN_DIR/summary.json"
+    --preserve-env-key AIM_CURSOR_VOICED_GATE
+    --preserve-env-key AIM_BARGE_OPEN_COOLDOWN_MS
+    --preserve-env-key AIM_BARGE_OPEN_COOLDOWN_MULT
+  )
+  [[ "${VIVA_PLAN_ALLOW_DESTRUCTIVE:-0}" == "1" ]] \
+    && plan_args+=(--allow-destructive)
+  [[ "${VIVA_PLAN_ALLOW_SECURITY_CHANGES:-0}" == "1" ]] \
+    && plan_args+=(--allow-security-changes)
+  python3 "$ROOT_DIR/scripts/check-deployment-plan.py" "${plan_args[@]}"
+  chmod 600 "$PLAN_DIR"/*.json "$PLAN_DIR"/*.log
+  c_grn "✓ 部署 plan 通过。摘要:$PLAN_DIR/summary.json"
   exit 0
 fi
 
