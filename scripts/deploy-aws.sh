@@ -403,17 +403,31 @@ fi
 
 if [[ "$PLAN_ONLY" == "true" ]]; then
   step "6/6 生成账号绑定的部署 plan"
-  PLAN_DIR="${VIVA_PLAN_DIR:-$ROOT_DIR/.deployment-plan}"
+  PLAN_DIR="${VIVA_PLAN_DIR:-$(dirname "$ROOT_DIR")/.vivavoce-plans/$(basename "$ROOT_DIR")}"
   [[ "$PLAN_DIR" == /* ]] || die "VIVA_PLAN_DIR 必须是绝对路径"
+  PLAN_DIR="$(realpath -m "$PLAN_DIR")"
+  case "$PLAN_DIR/" in
+    "$ROOT_DIR/"*)
+      die "VIVA_PLAN_DIR 必须位于源码树之外,避免 CDK asset 递归复制 plan"
+      ;;
+  esac
   mkdir -p "$PLAN_DIR"
   chmod 700 "$PLAN_DIR"
   find "$PLAN_DIR" -mindepth 1 -depth -delete
   mkdir -m 700 "$PLAN_DIR/cdk.out"
 
-  "$CDK_BIN" synth "$STACK_NAME" "${CTX[@]}" \
-    --output "$PLAN_DIR/cdk.out" \
-    --quiet \
-    >"$PLAN_DIR/synth.log" 2>&1
+  if ! "$CDK_BIN" synth "$STACK_NAME" "${CTX[@]}" \
+      --output "$PLAN_DIR/cdk.out" \
+      --quiet \
+      >"$PLAN_DIR/synth.log" 2>&1; then
+    c_red "CDK synth 失败,脱敏日志尾部:"
+    tail -n 40 "$PLAN_DIR/synth.log" \
+      | sed -E \
+          -e 's/[0-9]{12}/<account>/g' \
+          -e 's#https?://[^[:space:]]+#<url>#g' \
+          -e 's/[[:alnum:]._%+-]+@[[:alnum:].-]+/<email>/g' >&2
+    exit 1
+  fi
 
   if aws cloudformation describe-stacks \
       --region "$AWS_REGION" \
@@ -431,12 +445,20 @@ if [[ "$PLAN_ONLY" == "true" ]]; then
     printf '{"Resources":{}}\n' >"$PLAN_DIR/current-template.json"
   fi
 
-  "$CDK_BIN" diff \
-    --app "$PLAN_DIR/cdk.out" \
-    "$STACK_NAME" \
-    --change-set \
-    --no-color \
-    >"$PLAN_DIR/cdk-diff.log" 2>&1
+  if ! "$CDK_BIN" diff \
+      --app "$PLAN_DIR/cdk.out" \
+      "$STACK_NAME" \
+      --change-set \
+      --no-color \
+      >"$PLAN_DIR/cdk-diff.log" 2>&1; then
+    c_red "CDK diff 失败,脱敏日志尾部:"
+    tail -n 40 "$PLAN_DIR/cdk-diff.log" \
+      | sed -E \
+          -e 's/[0-9]{12}/<account>/g' \
+          -e 's#https?://[^[:space:]]+#<url>#g' \
+          -e 's/[[:alnum:]._%+-]+@[[:alnum:].-]+/<email>/g' >&2
+    exit 1
+  fi
 
   plan_args=(
     --current "$PLAN_DIR/current-template.json"

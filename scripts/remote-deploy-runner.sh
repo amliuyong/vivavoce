@@ -110,7 +110,8 @@ require_no_inflight_sessions() {
 
 write_stage "preflight"
 require_no_inflight_sessions
-export VIVA_PLAN_DIR="$ROOT_DIR/.deployment-plan"
+VIVA_PLAN_DIR="$(dirname "$ROOT_DIR")/.vivavoce-plans/$(basename "$ROOT_DIR")"
+export VIVA_PLAN_DIR
 export VIVA_PLAN_REQUIRE_EXISTING_STACK=1
 (( ALLOW_DESTRUCTIVE == 1 )) && export VIVA_PLAN_ALLOW_DESTRUCTIVE=1
 (( ALLOW_SECURITY_CHANGES == 1 )) \
